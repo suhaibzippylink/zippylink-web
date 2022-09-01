@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import {
-  Form,
-  Input,
-  Button,
-  message,
-  Select,
-  DatePicker,
-  InputNumber,
-  Upload,
-} from "antd";
+import { Form, Input, Button, message, DatePicker, InputNumber } from "antd";
 
 import { Formik } from "formik";
 import * as Yup from "yup";

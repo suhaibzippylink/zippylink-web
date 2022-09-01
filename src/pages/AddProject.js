@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   Form,
   Input,
@@ -8,7 +7,6 @@ import {
   Select,
   DatePicker,
   InputNumber,
-  Upload,
 } from "antd";
 
 import { Formik } from "formik";
@@ -53,7 +51,9 @@ export default function AddProject(props) {
         setCustomers(response.data.allCustomers);
         custs = response.data.allCustomers;
       })
-      .then((res) => {});
+      .catch((error) => {
+        message.error(error);
+      });
   };
 
   const fetchProject = async () => {
@@ -116,16 +116,6 @@ export default function AddProject(props) {
     }
   };
 
-  const selectAfter = (
-    <Select defaultValue="AFN" style={{ width: 60 }}>
-      <Option value="AFG">AFN </Option>
-      <Option value="USD">$</Option>
-      <Option value="EUR">€</Option>
-      <Option value="GBP">£</Option>
-      <Option value="CNY">¥</Option>
-    </Select>
-  );
-
   const initValue = {
     code: "",
     title: "",
@@ -179,7 +169,7 @@ export default function AddProject(props) {
         onSubmit={(formData) => {
           addProject(formData, selectedDate, budget, cost);
         }}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema}
       >
         {({
           values,
@@ -226,11 +216,29 @@ export default function AddProject(props) {
                 }
               >
                 <Select.Option value="null">Select</Select.Option>
-                {custs.map((item) => {
-                  return (
-                    <Select.Option value={item.Name}>{item.Name}</Select.Option>
-                  );
-                })}
+                {custs
+                  ? custs.map((item) => {
+                      return (
+                        <Select.Option value={item.Name}>
+                          {item.Name}
+                        </Select.Option>
+                      );
+                    })
+                  : customers
+                  ? customers.map((item) => {
+                      return (
+                        <Select.Option value={item.Name}>
+                          {item.Name}
+                        </Select.Option>
+                      );
+                    })
+                  : custs.map((item) => {
+                      return (
+                        <Select.Option value={item.Name}>
+                          {item.Name}
+                        </Select.Option>
+                      );
+                    })}
               </Select>
             </Form.Item>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table, Alert, Spin } from "antd";
+import { Card, Table, Spin } from "antd";
 import { employerCols } from "../Data";
 import { Avatar, Typography } from "antd";
 import { EyeTwoTone } from "@ant-design/icons";

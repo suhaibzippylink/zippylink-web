@@ -1,5 +1,5 @@
 import { Progress, Avatar, Typography, Tooltip } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { EyeTwoTone } from "@ant-design/icons";
 // Images
 import ava1 from "./assets/images/logo-shopify.svg";
 import ava2 from "./assets/images/logo-atlassian.svg";
@@ -17,15 +17,8 @@ import team1 from "./assets/images/team-1.jpg";
 import team2 from "./assets/images/team-2.jpg";
 import team3 from "./assets/images/team-3.jpg";
 import team4 from "./assets/images/team-4.jpg";
-import axios from "axios";
 import { Link } from "react-router-dom";
 const { Title } = Typography;
-
-var employers = [{}];
-axios.get("/allEmployers", {}).then((res) => {
-  console.log("RESPONSE in Data: ", res.data.All_Users);
-  let employers = res.data.All_Users;
-});
 
 // Employers Table Data
 export const employerCols = [

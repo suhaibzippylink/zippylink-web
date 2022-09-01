@@ -186,13 +186,13 @@ function Home() {
             style={{ width: "100%", height: "1005" }}
           >
             <div>
-              <img src={home1} style={{ width: "100%", height: 300 }} />
+              <img src={home1} style={{ width: "100%", height: 300 }} alt="" />
             </div>
             <div>
-              <img src={home2} style={{ width: "100%", height: 300 }} />
+              <img src={home2} style={{ width: "100%", height: 300 }} alt="" />
             </div>
             <div>
-              <img src={home3} style={{ width: "100%", height: 300 }} />
+              <img src={home3} style={{ width: "100%", height: 300 }} alt="" />
             </div>
           </Carousel>
         </Card>

@@ -28,7 +28,6 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
 const { Title } = Typography;
-const { TextArea } = Input;
 
 let pros = [];
 function Projects(props) {

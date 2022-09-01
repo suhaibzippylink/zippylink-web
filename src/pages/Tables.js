@@ -19,7 +19,7 @@ function Tables() {
   useEffect(() => {
     getData();
     console.log("Data: ", employers);
-  }, []);
+  }, [employers]);
 
   // const onChange = (e) => console.log(`radio checked:${e.target.value}`);
 

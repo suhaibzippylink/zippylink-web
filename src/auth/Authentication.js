@@ -1,4 +1,4 @@
-import { Route, Switch } from "react-router-dom";
+import { Route } from "react-router-dom";
 import SignUp from "../pages/SignUp";
 import SignIn from "../pages/SignIn";
 function Authentication() {

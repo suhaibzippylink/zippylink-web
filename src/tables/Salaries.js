@@ -119,7 +119,7 @@ function Salaries() {
     fetchSelectedMonth(fetchMonth);
     console.log("Salaries: ", salaries);
     totalPaid();
-  }, [salaries, selectedDate]);
+  }, [salaries, selectedDate, sals]);
 
   return (
     <Card title="Salaries" className="criclebox tablespace mb-24">

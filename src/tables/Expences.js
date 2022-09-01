@@ -30,7 +30,6 @@ function Expences() {
   const [newControler, setNewControler] = useState(true);
   const [visible, setVisible] = useState(false);
   const [since, setSince] = useState(0);
-  const [expCodes, setExpCodes] = useState();
   console.log("First Line in Expence Table: ", expences);
 
   const validationSchema = Yup.object().shape({
@@ -43,20 +42,20 @@ function Expences() {
   const onFormLayoutChange = ({ disabled }) => {
     setComponentDisabled(disabled);
   };
-  const getAllExpCode = async () => {
-    await axios
-      .get("/allExpences")
-      .then((response) => {
-        let temp = 0;
-        for (let i = 0; i < response.data.allExps.length; i++) {
-          temp = temp + expences[i].Cost;
-        }
-        setTotalCost(temp);
-      })
-      .then((res) => {
-        setLoader(false);
-      });
-  };
+  // const getAllExpCode = async () => {
+  //   await axios
+  //     .get("/allExpences")
+  //     .then((response) => {
+  //       let temp = 0;
+  //       for (let i = 0; i < response.data.allExps.length; i++) {
+  //         temp = temp + expences[i].Cost;
+  //       }
+  //       setTotalCost(temp);
+  //     })
+  //     .then((res) => {
+  //       setLoader(false);
+  //     });
+  // };
   const calculateCost = () => {
     let sum = 0;
     for (var i = 0; i < exps.length; i++) {
@@ -74,7 +73,7 @@ function Expences() {
   }
 
   const addNewMonth = async (datePicked) => {
-    const day = new Date(datePicked).getDate();
+    // const day = new Date(datePicked).getDate();
     const month = new Date(datePicked).getMonth();
     const m = parseInt(month.toString());
 

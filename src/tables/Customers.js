@@ -98,7 +98,7 @@ function Customers(props) {
                   state: { email: item.Email },
                 }}
               >
-                <img src={pencil} />
+                <img src={pencil} alt="" />
               </Link>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <Popconfirm
@@ -111,7 +111,7 @@ function Customers(props) {
                 cancelText="No"
               >
                 <a>
-                  <img src={delet} width={15} height={20} />
+                  <img src={delet} width={15} height={20} alt="" />
                 </a>
               </Popconfirm>
             </>
