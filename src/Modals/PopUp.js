@@ -6,17 +6,17 @@ const PopUp = () => {
   const location = useLocation();
   const data = location.state;
   console.log("Data: ", data);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(true);
 
-  // const showModal = () => {
-  //   setVisible(true);
-  // };
+  const showModal = () => {
+    setVisible(true);
+  };
 
   const handleOk = () => {
-    // setLoading(true);
+    setLoading(true);
     setTimeout(() => {
-      // setLoading(false);
+      setLoading(false);
       setVisible(false);
     }, 3000);
   };

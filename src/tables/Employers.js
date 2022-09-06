@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table, Spin } from "antd";
+import { Card, Table, Alert, Spin } from "antd";
 import { employerCols } from "../Data";
 import { Avatar, Typography } from "antd";
 import { EyeTwoTone } from "@ant-design/icons";
 import axios from "axios";
 import { Link } from "react-router-dom";
 const { Title } = Typography;
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 var emps = [];
 function Employers() {
   const [employers, setEmployers] = useState();
@@ -15,7 +16,7 @@ function Employers() {
 
   const getData = async () => {
     await axios
-      .get("/allEmployers")
+      .get(`${baseUrl}/allEmployers`)
       .then((res) => {
         console.log("RESPONSE in Employers: ", res.data.All_Users);
         setEmployers(res.data.All_Users);
@@ -56,7 +57,7 @@ function Employers() {
                     className="shape-avatar"
                     shape="square"
                     size={40}
-                    src="https://pbs.twimg.com/profile_images/1141091748510347266/KNl72RnM_400x400.jpg"
+                    src="https://th.bing.com/th/id/OIP.Lu-Gh0-ewlkjJMIRQ1p7fwHaEG?pid=ImgDet&w=178&h=98&c=7&dpr=1.5"
                   ></Avatar>
                   <div className="avatar-info">
                     <Title level={5}>{item.Name}</Title>

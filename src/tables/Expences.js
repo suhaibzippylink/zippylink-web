@@ -12,13 +12,16 @@ import {
   Input,
 } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { expencesCols } from "../Data";
 import { ToTopOutlined } from "@ant-design/icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import AuthContext from "../auth/Context";
 const { TextArea } = Input;
 let exps = [];
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 function Expences() {
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [expences, setExpences] = useState();
@@ -30,6 +33,7 @@ function Expences() {
   const [newControler, setNewControler] = useState(true);
   const [visible, setVisible] = useState(false);
   const [since, setSince] = useState(0);
+  const authContext = useContext(AuthContext);
   console.log("First Line in Expence Table: ", expences);
 
   const validationSchema = Yup.object().shape({
@@ -38,24 +42,25 @@ function Expences() {
     Item: Yup.string().required().label("Item"),
     Cost: Yup.number().required().label("Cost"),
     description: Yup.string().required().label("Expence Description"),
+    voucher: Yup.string().required().label("Voucher"),
   });
   const onFormLayoutChange = ({ disabled }) => {
     setComponentDisabled(disabled);
   };
-  // const getAllExpCode = async () => {
-  //   await axios
-  //     .get("/allExpences")
-  //     .then((response) => {
-  //       let temp = 0;
-  //       for (let i = 0; i < response.data.allExps.length; i++) {
-  //         temp = temp + expences[i].Cost;
-  //       }
-  //       setTotalCost(temp);
-  //     })
-  //     .then((res) => {
-  //       setLoader(false);
-  //     });
-  // };
+  const getAllExpCode = async () => {
+    await axios
+      .get(`${baseUrl}/allExpences`)
+      .then((response) => {
+        let temp = 0;
+        for (let i = 0; i < response.data.allExps.length; i++) {
+          temp = temp + expences[i].Cost;
+        }
+        setTotalCost(temp);
+      })
+      .then((res) => {
+        setLoader(false);
+      });
+  };
   const calculateCost = () => {
     let sum = 0;
     for (var i = 0; i < exps.length; i++) {
@@ -73,7 +78,7 @@ function Expences() {
   }
 
   const addNewMonth = async (datePicked) => {
-    // const day = new Date(datePicked).getDate();
+    const day = new Date(datePicked).getDate();
     const month = new Date(datePicked).getMonth();
     const m = parseInt(month.toString());
 
@@ -81,7 +86,7 @@ function Expences() {
     const date = `${toMonthName(m + 1)}-${year}`;
     alert(date);
     await axios
-      .post("/add-newExpenceRecord", {
+      .post(`${baseUrl}/add-newExpenceRecord`, {
         Month: date,
       })
       .then((response) => {
@@ -96,7 +101,7 @@ function Expences() {
     setStringMonth(date);
     // alert(date);
     axios
-      .post("/selected-month-expences", {
+      .post(`${baseUrl}/selected-month-expences`, {
         month: date,
       })
       .then((response) => {
@@ -112,13 +117,17 @@ function Expences() {
   const addExpence = async (formData) => {
     console.log("Add Expence:  Form Data: ", formData);
     await axios
-      .post("/add-expence", {
+      .post(`${baseUrl}/add-expence`, {
         Month: stringMonth,
         Exp_Code: formData.Exp_Code,
         Exp_Title: formData.Exp_Title,
         Item: formData.Item,
         Cost: since,
         description: formData.description,
+        Account_Email: "zippylink@zippylink.net",
+        Name: authContext.user.Name,
+        Email: authContext.user.Email,
+        Voucher_Number: formData.voucher,
       })
       .then((response) => {
         if (response.data.message) {
@@ -129,7 +138,7 @@ function Expences() {
   };
   const deleteExpence = (id) => {
     axios
-      .post("/delete-expence", {
+      .post(`${baseUrl}/delete-expence`, {
         id,
         month: stringMonth,
       })
@@ -228,7 +237,11 @@ function Expences() {
           key: "1",
           Date: (
             <>
-              <p>{item.Date}</p>
+              <p>
+                {new Date(item.Date).getDate()} /
+                {new Date(item.Date).getMonth()} /
+                {new Date(item.Date).getFullYear()}
+              </p>
             </>
           ),
           Exp_Code: (
@@ -276,9 +289,8 @@ function Expences() {
       />
       <h1
         style={{
-          position: "absolute",
-          bottom: "15%",
-          right: "14%",
+          position: "relative",
+          left: "75%",
           color: "red",
         }}
       >
@@ -314,6 +326,7 @@ function Expences() {
               Item: "",
               Cost: 0,
               description: "",
+              voucher: "",
             }}
             onSubmit={(formData) => {
               addExpence(formData, selectedDate, since);
@@ -368,6 +381,16 @@ function Expences() {
                   />
                   {touched.Item && (
                     <p style={{ color: "red" }}>{errors.Item}</p>
+                  )}
+                </Form.Item>
+                <Form.Item label="Voucher">
+                  <Input
+                    placeholder="Voucher"
+                    type="text"
+                    onChange={handleChange("voucher")}
+                  />
+                  {touched.voucher && (
+                    <p style={{ color: "red" }}>{errors.voucher}</p>
                   )}
                 </Form.Item>
                 <Form.Item label="Expence Date">

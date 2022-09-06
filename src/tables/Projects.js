@@ -28,7 +28,8 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
 const { Title } = Typography;
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 let pros = [];
 function Projects(props) {
   const authContext = useContext(AuthContext);
@@ -53,7 +54,7 @@ function Projects(props) {
   };
   const getData = async () => {
     await axios
-      .get("/all-projects")
+      .get(`${baseUrl}/all-projects`)
       .then((response) => {
         setProjects(response.data.Projects);
         pros = response.data.Projects;
@@ -66,7 +67,7 @@ function Projects(props) {
 
   const addProjectCost = (formData) => {
     axios
-      .post("/add-project-cost", {
+      .post(`${baseUrl}/add-project-cost`, {
         projectCode,
         Cost_Title: formData.Cost_Title,
         Cost_Type: formData.Cost_Type,

@@ -9,6 +9,7 @@ import {
   Input,
   Switch,
   message,
+  Spin,
 } from "antd";
 import signinbg from "../assets/images/img-signin.jpg";
 import Footer from "../components/layout/Footer";
@@ -19,22 +20,27 @@ function onChange(checked) {
 }
 const { Title } = Typography;
 const { Header, Content } = Layout;
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loader, setLoader] = useState(false);
   const authContext = useContext(AuthContext);
   const login = async (email, password) => {
+    setLoader(true);
     await axios
-      .post("/sign-in", {
+      .post(`${baseUrl}/sign-in`, {
         Email: email,
         Password: password,
       })
       .then((response) => {
         if (response.data.message) {
           console.log("Logged User: ", response.data.loggedUser);
-          const { Name, Email, Designation, Role } = response.data.loggedUser;
-          authContext.setUser({ Name, Email, Designation, Role });
+          const { Name, Email, Designation, Role, Phone } =
+            response.data.loggedUser;
+          setLoader(false);
+          authContext.setUser({ Name, Email, Designation, Role, Phone });
           message.success(response.data.message);
         } else if (response.data.error) {
           message.error(response.data.error);
@@ -102,22 +108,27 @@ export default function SignIn() {
                   />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                   name="remember"
                   className="aligin-center"
                   valuePropName="checked"
                 >
                   <Switch defaultChecked onChange={onChange} />
                   Remember me
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item>
                   <Button
                     onClick={() => login(email, password)}
-                    type="primary"
+                    type="danger"
                     htmlType="submit"
                     style={{ width: "100%" }}
                   >
+                    <Spin
+                      spinning={loader}
+                      size="small"
+                      style={{ color: "red" }}
+                    />
                     SIGN IN
                   </Button>
                 </Form.Item>

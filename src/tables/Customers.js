@@ -16,7 +16,8 @@ import { Link } from "react-router-dom";
 import pencil from "../assets/images/pencil.svg";
 import delet from "../assets/images/delete.png";
 const { Title } = Typography;
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 export let custs = [];
 function Customers(props) {
   const [customers, setCustomers] = useState();
@@ -25,7 +26,7 @@ function Customers(props) {
 
   const getData = async () => {
     await axios
-      .get("/all-cutomers")
+      .get(`${baseUrl}/all-cutomers`)
       .then((response) => {
         setCustomers(response.data.allCustomers);
         custs = response.data.allCustomers;
@@ -36,7 +37,7 @@ function Customers(props) {
   };
   const deleteCustomer = async (email) => {
     await axios
-      .post("/delete-customer", {
+      .post(`${baseUrl}/delete-customer`, {
         Email: email,
       })
       .then((response) => {
@@ -71,7 +72,7 @@ function Customers(props) {
                   className="shape-avatar"
                   shape="square"
                   size={40}
-                  src="https://pbs.twimg.com/profile_images/1141091748510347266/KNl72RnM_400x400.jpg"
+                  src="https://th.bing.com/th/id/OIP.Lu-Gh0-ewlkjJMIRQ1p7fwHaEG?pid=ImgDet&w=178&h=98&c=7&dpr=1.5"
                 ></Avatar>
                 <div className="avatar-info">
                   <Title level={5}>{item.Name}</Title>
@@ -98,7 +99,7 @@ function Customers(props) {
                   state: { email: item.Email },
                 }}
               >
-                <img src={pencil} alt="" />
+                <img src={pencil} />
               </Link>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <Popconfirm
@@ -111,7 +112,7 @@ function Customers(props) {
                 cancelText="No"
               >
                 <a>
-                  <img src={delet} width={15} height={20} alt="" />
+                  <img src={delet} width={15} height={20} />
                 </a>
               </Popconfirm>
             </>

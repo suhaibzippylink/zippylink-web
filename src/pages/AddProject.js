@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Form,
   Input,
@@ -8,25 +8,27 @@ import {
   DatePicker,
   InputNumber,
 } from "antd";
-
+import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-// import { custs } from "../tables/Customers";
+import AuthContext from "../auth/Context";
 const { TextArea } = Input;
 const { Option } = Select;
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 let singleProject = {};
 let route = "";
 let custs = [];
 export default function AddProject(props) {
+  const history = useHistory();
+  const authContext = useContext(AuthContext);
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [customers, setCustomers] = useState();
   const [budget, setBudget] = useState(0);
   const [cost, setCost] = useState(0);
   const [single, setSingle] = useState();
-
   const validationSchema = Yup.object().shape({
     code: Yup.string().required().label("Project Code"),
     title: Yup.string().required().label("Project Title"),
@@ -46,20 +48,18 @@ export default function AddProject(props) {
   };
   const getData = async () => {
     await axios
-      .get("/all-cutomers")
+      .get(`${baseUrl}/all-cutomers`)
       .then((response) => {
         setCustomers(response.data.allCustomers);
         custs = response.data.allCustomers;
       })
-      .catch((error) => {
-        message.error(error);
-      });
+      .then((res) => {});
   };
 
   const fetchProject = async () => {
     console.log("Code to Filter: ", props.location.state.code);
     await axios
-      .post("/single-Project", {
+      .post(`${baseUrl}/single-Project`, {
         Project_Code: props.location.state.code,
       })
       .then((response) => {
@@ -74,8 +74,8 @@ export default function AddProject(props) {
     console.log("Customers in Add Project: ", custs);
     if (props.location.state.code) {
       fetchProject();
-      route = "/update-project";
-    } else route = "/add-project";
+      route = `${baseUrl}/update-project`;
+    } else route = `${baseUrl}/add-project`;
   }, [single]);
 
   const addProject = async (formData, selectedDate, budget, cost) => {
@@ -102,6 +102,9 @@ export default function AddProject(props) {
           Cost: cost,
           Currency: formData.currency,
           Description: formData.description,
+          Account_Email: "zippylink@zippylink.net",
+          Name: authContext.user.Name,
+          Email: authContext.user.Email,
         })
         .then((response) => {
           console.log("Response: ", response.data);
@@ -109,6 +112,7 @@ export default function AddProject(props) {
             message.error(response.data.error);
           } else if (response.data.message) {
             message.success(response.data.message);
+            history.push("/projects");
           }
         });
     } catch (error) {
@@ -165,6 +169,7 @@ export default function AddProject(props) {
 
       <Formik
         style={{}}
+        enableReinitialize
         initialValues={props.location.state.code ? updatingValue : initValue}
         onSubmit={(formData) => {
           addProject(formData, selectedDate, budget, cost);
@@ -216,29 +221,11 @@ export default function AddProject(props) {
                 }
               >
                 <Select.Option value="null">Select</Select.Option>
-                {custs
-                  ? custs.map((item) => {
-                      return (
-                        <Select.Option value={item.Name}>
-                          {item.Name}
-                        </Select.Option>
-                      );
-                    })
-                  : customers
-                  ? customers.map((item) => {
-                      return (
-                        <Select.Option value={item.Name}>
-                          {item.Name}
-                        </Select.Option>
-                      );
-                    })
-                  : custs.map((item) => {
-                      return (
-                        <Select.Option value={item.Name}>
-                          {item.Name}
-                        </Select.Option>
-                      );
-                    })}
+                {custs.map((item) => {
+                  return (
+                    <Select.Option value={item.Name}>{item.Name}</Select.Option>
+                  );
+                })}
               </Select>
             </Form.Item>
 

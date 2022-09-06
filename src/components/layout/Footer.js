@@ -23,7 +23,11 @@ function Footer() {
           <div className="copyright">
             © 2022, made with
             {<HeartFilled />} by
-            <a href="#pablo" className="font-weight-bold" target="_blank">
+            <a
+              href="https://suhaib-islam.netlify.app/"
+              className="font-weight-bold"
+              target="_blank"
+            >
               Suhaib Qanooni
             </a>
             for a better web.

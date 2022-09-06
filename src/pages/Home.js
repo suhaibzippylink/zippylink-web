@@ -9,6 +9,8 @@ import home3 from "../assets/images/home-decor-3.jpeg";
 import axios from "axios";
 import Projects from "../tables/Projects";
 let pros = [];
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 function Home() {
   const { Title } = Typography;
 
@@ -26,7 +28,7 @@ function Home() {
 
   const getData = async () => {
     await axios
-      .get("/all-projects")
+      .get(`${baseUrl}/all-projects`)
       .then((response) => {
         setProjects(response.data.Projects);
         pros = response.data.Projects;
@@ -186,13 +188,13 @@ function Home() {
             style={{ width: "100%", height: "1005" }}
           >
             <div>
-              <img src={home1} style={{ width: "100%", height: 300 }} alt="" />
+              <img src={home1} style={{ width: "100%", height: 300 }} />
             </div>
             <div>
-              <img src={home2} style={{ width: "100%", height: 300 }} alt="" />
+              <img src={home2} style={{ width: "100%", height: 300 }} />
             </div>
             <div>
-              <img src={home3} style={{ width: "100%", height: 300 }} alt="" />
+              <img src={home3} style={{ width: "100%", height: 300 }} />
             </div>
           </Carousel>
         </Card>

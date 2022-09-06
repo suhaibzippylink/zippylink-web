@@ -17,6 +17,7 @@ import AddCustomer from "../pages/Forms/AddCustomer";
 import UpdateCustomer from "../pages/Forms/UpdateCustomer";
 import Customers from "../tables/Customers";
 import Projects from "../tables/Projects";
+import Accounts from "../tables/Accounts";
 function Application() {
   return (
     <Main>
@@ -38,6 +39,8 @@ function Application() {
 
       <Route exact path="/customers" component={Customers} />
       <Route exact path="/add-project" component={AddProject} />
+
+      <Route exact path="/accounts" component={Accounts} />
     </Main>
   );
 }

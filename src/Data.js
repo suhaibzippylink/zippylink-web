@@ -959,3 +959,43 @@ export const expencesData = [
     description: "Gas for the kitchen",
   },
 ];
+
+//Accounts Table Data
+export const accountsCols = [
+  { title: "Account Name", dataIndex: "Account_Name", key: "Account_Name" },
+  { title: "Account Email", dataIndex: "Account_Email", key: "Account_Email" },
+  { title: "Total Credit", dataIndex: "Total_Credit", key: "Total_Credit" },
+  { title: "Total Debit", dataIndex: "Total_Debit", key: "Total_Debit" },
+  { title: "Cash Inhand", dataIndex: "Cash_Inhand", key: "Cash_Inhand" },
+];
+
+//Credit Table Data
+export const accountsCreditCols = [
+  { title: "Date", dataIndex: "Date", key: "Date" },
+  { title: "CreditBy", dataIndex: "CreditBy", key: "CreditBy" },
+  { title: "Source", dataIndex: "Source", key: "Source" },
+  { title: "ReceiveAs", dataIndex: "ReceiveAs", key: "ReceiveAs" },
+  { title: "Ammount", dataIndex: "Ammount", key: "Ammount" },
+  {
+    title: "Action",
+    dataIndex: "action",
+    key: "x",
+  },
+];
+//Debit Table Data
+export const accountsDebitCols = [
+  { title: "Date", dataIndex: "Date", key: "Date" },
+  { title: "Person", dataIndex: "Person", key: "Person" },
+  {
+    title: "Voucher_Number",
+    dataIndex: "Voucher_Number",
+    key: "Voucher_Number",
+  },
+  { title: "ReceiveAs", dataIndex: "ReceiveAs", key: "ReceiveAs" },
+  { title: "Ammount", dataIndex: "Ammount", key: "Ammount" },
+  {
+    title: "Action",
+    dataIndex: "action",
+    key: "x",
+  },
+];

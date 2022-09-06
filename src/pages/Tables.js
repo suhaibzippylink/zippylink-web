@@ -6,11 +6,13 @@ import Customers from "../tables/Customers";
 import Employers from "../tables/Employers";
 import Projects from "../tables/Projects";
 import axios from "axios";
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 function Tables() {
   const [employers, setEmployers] = useState();
 
   const getData = async () => {
-    axios.get("/allEmployers", {}).then((res) => {
+    axios.get(`${baseUrl}/allEmployers`, {}).then((res) => {
       console.log("RESPONSE: ", res.data.All_Users);
       setEmployers(res.data.All_Users);
     });
@@ -19,7 +21,7 @@ function Tables() {
   useEffect(() => {
     getData();
     console.log("Data: ", employers);
-  }, [employers]);
+  }, []);
 
   // const onChange = (e) => console.log(`radio checked:${e.target.value}`);
 

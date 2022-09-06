@@ -21,6 +21,7 @@ import {
   VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 
+import BgProfile from "../assets/images/bg-profile.jpg";
 import profilavatar from "../assets/images/face-1.jpg";
 import convesionImg from "../assets/images/face-3.jpg";
 import convesionImg2 from "../assets/images/face-4.jpg";
@@ -31,6 +32,7 @@ import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
 import AuthContext from "../auth/Context";
+// import pfP from "../../assets/images/zippyLogo2.jpg";
 function Profile() {
   const [imageURL, setImageURL] = useState(false);
   const [, setLoading] = useState(false);
@@ -150,10 +152,7 @@ function Profile() {
       <div
         className="profile-nav-bg"
         style={{
-          backgroundImage:
-            "url(" +
-            "https://media-exp1.licdn.com/dms/image/C4D16AQFCpb-j6-MkCw/profile-displaybackgroundimage-shrink_200_800/0/1622147673530?e=1660780800&v=beta&t=sT6p1CzjqhPW5TeGSDywHFlhdVcXVMxmNsJJOhTZKak" +
-            ")",
+          backgroundImage: BgProfile,
         }}
       ></div>
 
@@ -167,9 +166,8 @@ function Profile() {
                 <Avatar
                   size={74}
                   shape="square"
-                  src="https://pbs.twimg.com/profile_images/1141091748510347266/KNl72RnM_400x400.jpg"
+                  src="https://th.bing.com/th/id/OIP.Lu-Gh0-ewlkjJMIRQ1p7fwHaEG?pid=ImgDet&w=178&h=98&c=7&dpr=1.5"
                 />
-
                 <div className="avatar-info">
                   <h4 className="font-semibold m-0">{authContext.user.Name}</h4>
                   <p>{authContext.user.Role}</p>
@@ -258,13 +256,13 @@ function Profile() {
             <hr className="my-25" />
             <Descriptions title="Contact Information">
               <Descriptions.Item label="Full Name" span={3}>
-                Suhaib Qanooni
+                {authContext.user.Name}
               </Descriptions.Item>
               <Descriptions.Item label="Mobile" span={3}>
-                (93) 786702440
+                {authContext.user.Phone}
               </Descriptions.Item>
               <Descriptions.Item label="Email" span={3}>
-                suhaibqanooni2000@gmail.com
+                {authContext.user.Email}
               </Descriptions.Item>
               <Descriptions.Item label="Location" span={3}>
                 Afghanistan
@@ -283,7 +281,7 @@ function Profile() {
             </Descriptions>
           </Card>
         </Col>
-        <Col span={24} md={8} className="mb-24">
+        {/* <Col span={24} md={8} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Conversations</h6>}
@@ -308,9 +306,9 @@ function Profile() {
               )}
             />
           </Card>
-        </Col>
+        </Col> */}
       </Row>
-      <Card
+      {/* <Card
         bordered={false}
         className="header-solid mb-24"
         title={
@@ -365,7 +363,7 @@ function Profile() {
             </Upload>
           </Col>
         </Row>
-      </Card>
+      </Card> */}
     </>
   );
 }

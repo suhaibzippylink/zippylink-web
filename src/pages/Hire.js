@@ -16,6 +16,8 @@ import * as Yup from "yup";
 import axios from "axios";
 const { TextArea } = Input;
 const { Option } = Select;
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 export default function Hire() {
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
@@ -46,7 +48,7 @@ export default function Hire() {
     console.log("Added Customer: ", date);
     try {
       await axios
-        .post("/add-employer", {
+        .post(`${baseUrl}/add-employer`, {
           Name: formData.name,
           Email: formData.email,
           Address: formData.address,

@@ -1,12 +1,25 @@
-import React, { useState } from "react";
-import { Form, Input, Button, message, DatePicker, InputNumber } from "antd";
+import React, { useState, useEffect } from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import {
+  Form,
+  Input,
+  Button,
+  message,
+  Select,
+  DatePicker,
+  InputNumber,
+  Upload,
+} from "antd";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 const { TextArea } = Input;
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 export default function AddCustomer(props) {
+  const history = useHistory();
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState();
   const [since, setSince] = useState(0);
@@ -34,7 +47,7 @@ export default function AddCustomer(props) {
 
     try {
       await axios
-        .post("/add-customer", {
+        .post(`${baseUrl}/add-customer`, {
           Name: formData.name,
           Email: formData.email,
           Year_Since_Working: since,
@@ -47,6 +60,7 @@ export default function AddCustomer(props) {
             message.error(response.data.error);
           } else if (response.data.message) {
             message.success(response.data.message);
+            history.push("/customers");
           }
         });
     } catch (error) {

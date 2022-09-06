@@ -10,11 +10,15 @@ import {
   InputNumber,
 } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import AuthContext from "../auth/Context";
 import { salaryCols } from "../Data";
 const { Title } = Typography;
 let sals = [];
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 function Salaries() {
+  const authContext = useContext(AuthContext);
   const [salaries, setSalaries] = useState();
   const [loader, setLoader] = useState(true);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -42,7 +46,7 @@ function Salaries() {
     const date = `${toMonthName(m + 1)}-${year}`;
     alert(date);
     await axios
-      .post("/add-newMonth", {
+      .post(`${baseUrl}/add-newMonth`, {
         Month: date,
       })
       .then((response) => {
@@ -50,14 +54,18 @@ function Salaries() {
       });
   };
 
-  const paySalary = async (id, month, payDate, payDeduction) => {
+  const paySalary = async (id, month, payDate, payDeduction, voucher) => {
     alert(payDeduction);
     await axios
-      .post("/pay-monthly", {
+      .post(`${baseUrl}/pay-monthly`, {
         month,
         id,
         payDate,
         advanceDeduction: parseInt(payDeduction),
+        Account_Email: process.env.ACCOUNT_EMAIL || "zippylink@zippylink.net",
+        Name: authContext.user.Name,
+        Email: authContext.user.Email,
+        Voucher_Number: voucher,
       })
       .then((response) => {
         console.log("Response Paid Updation: ", response.data);
@@ -73,7 +81,7 @@ function Salaries() {
     setStringMonth(date);
     // alert(date);
     axios
-      .post("/selected-month", {
+      .post(`${baseUrl}/selected-month`, {
         month: date,
       })
       .then((response) => {
@@ -95,12 +103,16 @@ function Salaries() {
       });
   };
 
-  const payAdvance = async (id, month, payment) => {
+  const payAdvance = async (id, month, payment, voucher) => {
     await axios
-      .post("pay-advance", {
+      .post(`${baseUrl}/pay-advance`, {
         AdvancePay: payment,
         month,
         id,
+        Account_Email: process.env.ACCOUNT_EMAIL || "zippylink@zippylink.net",
+        Name: authContext.user.Name,
+        Email: authContext.user.Email,
+        Voucher_Number: voucher,
       })
       .then((response) => {
         message.success("Advance Paid Successfully!");
@@ -119,7 +131,7 @@ function Salaries() {
     fetchSelectedMonth(fetchMonth);
     console.log("Salaries: ", salaries);
     totalPaid();
-  }, [salaries, selectedDate, sals]);
+  }, [salaries, selectedDate]);
 
   return (
     <Card title="Salaries" className="criclebox tablespace mb-24">
@@ -248,11 +260,13 @@ function Salaries() {
                 title="Are you sure to Pay Salary?"
                 onConfirm={() => {
                   let advanceDeduction = prompt("Advance Deduction");
+                  let voucher = prompt("Voucher Number");
                   paySalary(
                     item._id,
                     stringMonth,
                     new Date(selectedDate),
-                    advanceDeduction
+                    advanceDeduction,
+                    voucher
                   );
                 }}
                 onCancel={() => message.error("Click on No")}
@@ -277,7 +291,10 @@ function Salaries() {
 
               <Popconfirm
                 title="Are you sure to Pay Advance?"
-                onConfirm={() => payAdvance(item._id, stringMonth, advancePay)}
+                onConfirm={() => {
+                  let voucher = prompt("Voucher Number");
+                  payAdvance(item._id, stringMonth, advancePay, voucher);
+                }}
                 onCancel={() => message.error("Click on No")}
                 okText="Yes"
                 cancelText="No"
