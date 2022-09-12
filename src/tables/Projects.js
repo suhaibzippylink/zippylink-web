@@ -66,6 +66,7 @@ function Projects(props) {
   };
 
   const addProjectCost = (formData) => {
+    const Voucher_Number = prompt("Voucher Number? ");
     axios
       .post(`${baseUrl}/add-project-cost`, {
         projectCode,
@@ -73,6 +74,10 @@ function Projects(props) {
         Cost_Type: formData.Cost_Type,
         Ammount: ammount,
         CreatedAt: selectedDate,
+        Account_Email: process.env.ACCOUNT_EMAIL || "zippylink@zippylink.net",
+        Name: authContext.user.Name,
+        Email: authContext.user.Email,
+        Voucher_Number,
       })
       .then((response) => {
         setVisible(false);

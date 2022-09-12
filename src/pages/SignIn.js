@@ -15,6 +15,7 @@ import signinbg from "../assets/images/img-signin.jpg";
 import Footer from "../components/layout/Footer";
 import AuthContext from "../auth/Context";
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 function onChange(checked) {
   console.log(`switch to ${checked}`);
 }
@@ -27,23 +28,52 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loader, setLoader] = useState(false);
   const authContext = useContext(AuthContext);
+  // const login = async (email, password) => {
+  //   setLoader(true);
+  //   await axios
+  //     .post(`${baseUrl}/sign-in`, {
+  //       Email: email,
+  //       Password: password,
+  //     })
+  //     .then((response) => {
+  //       if (response.data.message) {
+  //         console.log("Logged User: ", response.data.loggedUser);
+  //         const { Name, Email, Designation, Role, Phone } =
+  //           response.data.loggedUser;
+  //         setLoader(false);
+  //         authContext.setUser({ Name, Email, Designation, Role, Phone });
+  //         message.success(response.data.message);
+  //       } else if (response.data.error) {
+  //         message.error(response.data.error);
+  //         setLoader(false);
+  //       }
+  //     });
+
+  //   console.log("User in SignIn: ", authContext.user);
+  // };
   const login = async (email, password) => {
     setLoader(true);
-    await axios
-      .post(`${baseUrl}/sign-in`, {
+    fetch(`${baseUrl}/login`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         Email: email,
         Password: password,
-      })
+      }),
+    })
+      .then((res) => res.json())
       .then((response) => {
-        if (response.data.message) {
-          console.log("Logged User: ", response.data.loggedUser);
-          const { Name, Email, Designation, Role, Phone } =
-            response.data.loggedUser;
+        if (response.message) {
+          message.success(response.message);
+          const loggedUser = jwtDecode(response.token);
+          authContext.setUser(loggedUser);
           setLoader(false);
-          authContext.setUser({ Name, Email, Designation, Role, Phone });
-          message.success(response.data.message);
-        } else if (response.data.error) {
-          message.error(response.data.error);
+        } else if (response.error) {
+          message.error(response.error);
+          setLoader(false);
         }
       });
 

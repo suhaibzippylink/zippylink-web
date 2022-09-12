@@ -9,6 +9,7 @@ import {
   DatePicker,
   InputNumber,
   Upload,
+  message,
 } from "antd";
 
 import { Formik } from "formik";
@@ -37,18 +38,27 @@ export default function Hire() {
   const onFormLayoutChange = ({ disabled }) => {
     setComponentDisabled(disabled);
   };
+  function toMonthName(monthNumber) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+
+    return date.toLocaleString("en-US", {
+      month: "long",
+    });
+  }
   const addCostomer = async (formData, selectedDate, salary) => {
-    alert(salary);
     console.log("Added Customer: ", formData);
 
     const day = new Date(selectedDate).getDate();
     const month = new Date(selectedDate).getMonth() + 1;
     const year = new Date(selectedDate).getFullYear();
     const date = day + "-" + month + "-" + year;
+    const m = `${toMonthName(month)}-${year}`;
     console.log("Added Customer: ", date);
     try {
       await axios
         .post(`${baseUrl}/add-employer`, {
+          month: m,
           Name: formData.name,
           Email: formData.email,
           Address: formData.address,
@@ -61,9 +71,12 @@ export default function Hire() {
         })
         .then((response) => {
           console.log("Response: ", response.data);
+          if (response.data.message) message.success(response.data.message);
+          else if (response.data.error) message.error(response.data.error);
         });
     } catch (error) {
       console.log("Error: ", error);
+      message.error(error);
     }
   };
   const selectAfter = (
