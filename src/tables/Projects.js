@@ -112,12 +112,21 @@ function Projects(props) {
             name: (
               <>
                 <Avatar.Group>
-                  <Avatar
-                    className="shape-avatar"
-                    src={ava1}
-                    size={25}
-                    alt=""
-                  />
+                  <a
+                    href={
+                      item.File === ""
+                        ? () => message.warn("Attachement not exist")
+                        : item.File
+                    }
+                  >
+                    <Avatar
+                      className="shape-avatar"
+                      src={ava1}
+                      size={25}
+                      alt=""
+                    />
+                  </a>
+
                   <div className="avatar-info">
                     <Title level={5}>{item.Customer}</Title>
                   </div>
@@ -173,7 +182,7 @@ function Projects(props) {
             revenue: (
               <>
                 <div className="text-sm">
-                  {item.Budget - item.Cost}
+                  {(item.Budget - item.Cost).toFixed(2)}
                   {item.Currency === "AFN"
                     ? "AFN"
                     : item.Currency === "USD"

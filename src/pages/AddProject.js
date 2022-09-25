@@ -6,9 +6,12 @@ import {
   message,
   Select,
   DatePicker,
+  Upload,
   InputNumber,
+  Spin,
 } from "antd";
-import { useHistory } from "react-router-dom";
+import { ToTopOutlined } from "@ant-design/icons";
+import { Link, useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -29,6 +32,9 @@ export default function AddProject(props) {
   const [budget, setBudget] = useState(0);
   const [cost, setCost] = useState(0);
   const [single, setSingle] = useState();
+  const [file, setFile] = useState();
+  const [filePath, setFilePath] = useState("");
+  const [controlUploadSpin, setControlUploadSpin] = useState(false);
   const validationSchema = Yup.object().shape({
     code: Yup.string().required().label("Project Code"),
     title: Yup.string().required().label("Project Title"),
@@ -69,6 +75,25 @@ export default function AddProject(props) {
       });
   };
 
+  const handleUploadAnt = (e) => {
+    //Change
+    setControlUploadSpin(true);
+    console.log("e in ANtd: ", e);
+    if (e.file.status !== "uploading") {
+      setControlUploadSpin(false);
+    }
+    if (e.file.status === "done") {
+      message.success(`${e.file.name} file uploaded successfully`);
+      setControlUploadSpin(false);
+      setFile(e);
+    } else if (e.file.status === "error") {
+      // message.error(`${e.file.name} file upload failed.`);
+      setControlUploadSpin(false);
+    }
+    console.log("File Antd: ", e.file);
+    setFile(e.file.originFileObj);
+  };
+
   useEffect(() => {
     getData();
     console.log("Customers in Add Project: ", custs);
@@ -76,7 +101,7 @@ export default function AddProject(props) {
       fetchProject();
       route = `${baseUrl}/update-project`;
     } else route = `${baseUrl}/add-project`;
-  }, [single]);
+  }, [single, file]);
 
   const addProject = async (formData, selectedDate, budget, cost) => {
     console.log("Added Customer: ", formData);
@@ -87,9 +112,31 @@ export default function AddProject(props) {
     const date = day + "-" + month + "-" + year;
     console.log("Added Customer Date: ", date);
 
+    //upload File Start
+    console.log("File in Upload: ", file);
+    const fileFormData = new FormData();
+    fileFormData.append(`file`, file);
+    console.log("Form Data: ", fileFormData.get("file"));
+    let path = "";
+    await axios
+      .post(`${baseUrl}/file-upload/${formData.code}`, fileFormData)
+      .then((response) => {
+        console.log("Response file upload: ", response.data);
+        setFilePath(response.data.file_url);
+        console.log("NEW URL: ", response.data.file_url);
+        path = response.data.file_url;
+        if (response.data.message) message.success(response.data.message);
+        else if (response.data.error) message.error(response.data.error);
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
+    //upload File End
+
     try {
       await axios
         .post(route, {
+          File: path, //Change
           Project_Code: formData.code,
           Date: selectedDate,
           Customer: formData.customer,
@@ -166,7 +213,6 @@ export default function AddProject(props) {
           Zippy Link Add Project
         </h1>
       </Button>
-
       <Formik
         style={{}}
         enableReinitialize
@@ -239,7 +285,7 @@ export default function AddProject(props) {
                 <Select.Option value="null">Select</Select.Option>
                 <Select.Option value="Hardware">Hardware</Select.Option>
                 <Select.Option value="Software">Software</Select.Option>
-                <Select.Option value="Reneval">Reneval</Select.Option>
+                <Select.Option value="Renewal">Renewal</Select.Option>
                 <Select.Option value="Support">Support</Select.Option>
                 <Select.Option value="SLA">SLA</Select.Option>
                 <Select.Option value="Manage_Service">
@@ -252,7 +298,7 @@ export default function AddProject(props) {
               )}
             </Form.Item>
             <Form.Item label="Product Name">
-              <Select
+              {/* <Select
                 onChange={handleChange("product")}
                 defaultValue={
                   props.location.state.code ? values.product : "null"
@@ -266,7 +312,13 @@ export default function AddProject(props) {
                   Customer Charges
                 </Select.Option>
                 <Select.Option value="MDF">MDF</Select.Option>
-              </Select>
+              </Select> */}
+              <Input
+                placeholder="Product Name"
+                type="text"
+                onChange={handleChange("product")}
+                value={values.product}
+              />
               {touched.product && (
                 <p style={{ color: "red" }}>{errors.product}</p>
               )}
@@ -368,6 +420,29 @@ export default function AddProject(props) {
                 <p style={{ color: "red" }}>{errors.description}</p>
               )}
             </Form.Item>
+            <Upload.Dragger
+              progress={{
+                strokeWidth: 3,
+                format: (percent) =>
+                  percent && `${parseFloat(percent.toFixed(2))}%`,
+
+                strokeColor: { "0%": "#108ee9", "100%": "#87d068" },
+              }}
+              accept=".docx, .xlsx, .PNG, .jpeg, .jpg"
+              iconRender={() => {
+                return <Spin spinning={controlUploadSpin}></Spin>;
+              }}
+              listType="picture"
+              onChange={(e) => handleUploadAnt(e)}
+            >
+              <Button
+                type="dashed"
+                className="ant-full-box"
+                icon={<ToTopOutlined />}
+              >
+                <span className="click">Upload File</span>
+              </Button>
+            </Upload.Dragger>
 
             <Form.Item label="                       ">
               <Button onClick={handleSubmit}>Submit</Button>

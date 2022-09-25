@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useContext } from "react";
 import {
   Row,
   Col,
@@ -13,6 +12,9 @@ import {
   Drawer,
   Typography,
   Switch,
+  Modal,
+  Form,
+  message,
 } from "antd";
 
 import {
@@ -21,11 +23,13 @@ import {
   TwitterOutlined,
   FacebookFilled,
 } from "@ant-design/icons";
-
+import { Formik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import avtar from "../../assets/images/team-2.jpg";
-
+import AuthContext from "../../auth/Context";
 const ButtonContainer = styled.div`
   .ant-btn-primary {
     background-color: #1890ff;
@@ -236,7 +240,8 @@ const setting = [
     ></path>
   </svg>,
 ];
-
+const baseUrl =
+  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 function Header({
   placement,
   name,
@@ -247,15 +252,42 @@ function Header({
   handleFixedNavbar,
 }) {
   const { Title, Text } = Typography;
-
+  const authContext = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
+  const [passwordFormVisible, setPasswordVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
-
+  const [componentDisabled, setComponentDisabled] = useState(false);
   useEffect(() => window.scrollTo(0, 0));
 
   const showDrawer = () => setVisible(true);
   const hideDrawer = () => setVisible(false);
 
+  const validationSchema = Yup.object().shape({
+    Old_Password: Yup.string().required().label("Old Password"),
+    New_Password: Yup.string().required().label("New Password"),
+    Confirm_New_Password: Yup.string().required().label("Confirm New Password"),
+  });
+  const onFormLayoutChange = ({ disabled }) => {
+    setComponentDisabled(disabled);
+  };
+  const resetPassword = (formData) => {
+    axios
+      .post(`${baseUrl}/reset_password`, {
+        Email: authContext.user.Email,
+        Password: formData.Old_Password,
+        New_Password: formData.New_Password,
+        Confirm_New_Password: formData.Confirm_New_Password,
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.message) {
+          message.success(response.data.message);
+          setPasswordVisible(false);
+        } else if (response.data.error) {
+          message.error(response.data.error);
+        }
+      });
+  };
   return (
     <>
       <div className="setting-drwer" onClick={showDrawer}>
@@ -355,7 +387,20 @@ function Header({
                     </Button>
                   </ButtonContainer>
                 </div>
-
+                <div className="sidebarnav-color mb-2">
+                  <Title level={5}>Change Password</Title>
+                  <Text>Click to change your password</Text>
+                  <ButtonContainer className="trans">
+                    <Button
+                      type={"primary"}
+                      onClick={() => {
+                        setPasswordVisible(true);
+                      }}
+                    >
+                      EDIT PASSWORD
+                    </Button>
+                  </ButtonContainer>
+                </div>
                 <div className="sidebarnav-color mb-2">
                   <Title level={5}>Sidenav Type</Title>
                   <Text>Choose between 2 different sidenav types.</Text>
@@ -420,6 +465,86 @@ function Header({
           />
         </Col>
       </Row>
+      <Modal
+        title="Reset Your Password"
+        centered
+        visible={passwordFormVisible}
+        onOk={() => {
+          setPasswordVisible(false);
+        }}
+        onCancel={() => setPasswordVisible(false)}
+        width={1000}
+      >
+        <Formik
+          style={{}}
+          initialValues={{
+            Old_Password: "",
+            New_Password: "",
+            Confirm_New_Password: "",
+          }}
+          onSubmit={(formData) => {
+            resetPassword(formData);
+          }}
+          validationSchema={validationSchema}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+          }) => (
+            <Form
+              labelCol={{
+                span: 4,
+              }}
+              wrapperCol={{
+                span: 14,
+              }}
+              layout="horizontal"
+              onValuesChange={onFormLayoutChange}
+              disabled={componentDisabled}
+            >
+              <Form.Item label="Old Password">
+                <Input.Password
+                  placeholder="Old Password"
+                  onChange={handleChange("Old_Password")}
+                />
+                {touched.Old_Password && (
+                  <p style={{ color: "red" }}>{errors.Old_Password}</p>
+                )}
+              </Form.Item>
+
+              <Form.Item label="New Password">
+                <Input.Password
+                  placeholder="New Password"
+                  onChange={handleChange("New_Password")}
+                />
+                {touched.New_Password && (
+                  <p style={{ color: "red" }}>{errors.New_Password}</p>
+                )}
+              </Form.Item>
+
+              <Form.Item label="Confirm New Password">
+                <Input.Password
+                  placeholder="Confirm New Password"
+                  type="text"
+                  onChange={handleChange("Confirm_New_Password")}
+                />
+                {touched.Confirm_New_Password && (
+                  <p style={{ color: "red" }}>{errors.Confirm_New_Password}</p>
+                )}
+              </Form.Item>
+
+              <Form.Item label="                       ">
+                <Button onClick={handleSubmit}>RESET PASSWORD</Button>
+              </Form.Item>
+            </Form>
+          )}
+        </Formik>
+      </Modal>
     </>
   );
 }

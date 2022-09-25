@@ -96,7 +96,7 @@ function Customers(props) {
               <Link
                 to={{
                   pathname: "/update-customer",
-                  state: { email: item.Email },
+                  state: { email: item.Email, id: item._id },
                 }}
               >
                 <img src={pencil} />

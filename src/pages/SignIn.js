@@ -131,7 +131,7 @@ export default function SignIn() {
                     },
                   ]}
                 >
-                  <Input
+                  <Input.Password
                     placeholder="Password"
                     type="password"
                     onChange={(e) => setPassword(e.target.value)}

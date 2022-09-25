@@ -22,6 +22,7 @@ import {
 } from "@ant-design/icons";
 
 import BgProfile from "../assets/images/bg-profile.jpg";
+import home9 from "../assets/ZippyImages/9.jpg";
 import profilavatar from "../assets/images/face-1.jpg";
 import convesionImg from "../assets/images/face-3.jpg";
 import convesionImg2 from "../assets/images/face-4.jpg";
@@ -152,7 +153,7 @@ function Profile() {
       <div
         className="profile-nav-bg"
         style={{
-          backgroundImage: BgProfile,
+          backgroundImage: `url(${home9})`,
         }}
       ></div>
 

@@ -52,6 +52,8 @@ export default function UpdateCustomer(props) {
     try {
       await axios
         .post(`${baseUrl}/update-customer`, {
+          id: props.location.state.id,
+          CreatedAt: date,
           Name: formData.name,
           Email: formData.email,
           Year_Since_Working: since,
@@ -85,7 +87,7 @@ export default function UpdateCustomer(props) {
         }}
       >
         <h1 style={{ fontSize: 30, color: "skyblue" }}>
-          Zippy Link Add New Customer
+          Zippy Link Customer Details
         </h1>
       </Button>
 
