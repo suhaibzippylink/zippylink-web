@@ -78,6 +78,7 @@ function Projects(props) {
         Name: authContext.user.Name,
         Email: authContext.user.Email,
         Voucher_Number,
+        Currency: currency,
       })
       .then((response) => {
         setVisible(false);

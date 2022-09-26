@@ -379,7 +379,7 @@ export default function AddProject(props) {
                       style={{ width: 60 }}
                       onChange={handleChange("currency")}
                     >
-                      <Option value="AFG">AFN </Option>
+                      <Option value="AFN">AFN </Option>
                       <Option value="USD">$</Option>
                       <Option value="EUR">€</Option>
                       <Option value="GBP">£</Option>

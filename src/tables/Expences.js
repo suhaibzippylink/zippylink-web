@@ -10,6 +10,7 @@ import {
   Modal,
   Form,
   Input,
+  Select,
 } from "antd";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
@@ -19,6 +20,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
 const { TextArea } = Input;
+const { Option } = Select;
 let exps = [];
 const baseUrl =
   process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
@@ -128,6 +130,7 @@ function Expences() {
         Name: authContext.user.Name,
         Email: authContext.user.Email,
         Voucher_Number: formData.voucher,
+        Currency: formData.currency,
       })
       .then((response) => {
         if (response.data.message) {
@@ -327,6 +330,7 @@ function Expences() {
               Cost: 0,
               description: "",
               voucher: "",
+              currency: "",
             }}
             onSubmit={(formData) => {
               addExpence(formData, selectedDate, since);
@@ -413,6 +417,19 @@ function Expences() {
                     }}
                   >
                     <InputNumber
+                      addonAfter={
+                        <Select
+                          defaultValue="AFN"
+                          style={{ width: 60 }}
+                          onChange={handleChange("currency")}
+                        >
+                          <Option value="AFN">AFN</Option>
+                          <Option value="USD">$</Option>
+                          <Option value="EUR">€</Option>
+                          <Option value="GBP">£</Option>
+                          <Option value="CNY">¥</Option>
+                        </Select>
+                      }
                       defaultValue={100}
                       onChange={(e) => setSince(e)}
                     />
