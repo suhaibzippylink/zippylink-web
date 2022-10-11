@@ -193,7 +193,8 @@ function Home() {
                     <Col xs={20}>
                       <span>{c.today}</span>
                       <Title level={3}>
-                        {c.title} <small className={c.bnb}>{c.persent}</small>
+                        {c.title.toFixed(2)}
+                        <small className={c.bnb}>{c.persent}</small>
                       </Title>
                     </Col>
                     <Col xs={6}>

@@ -51,6 +51,7 @@ function Salaries() {
       })
       .then((response) => {
         if (response.data.message) message.success(response.data.message);
+        if (response.data.error) message.error(response.data.error);
       });
   };
 
@@ -91,10 +92,6 @@ function Salaries() {
           sals = [];
           return;
         }
-        // console.log(
-        //   "Selected Month Salaries: ",
-        //   response.data.selectedMonth.Employers
-        // );
         setSalaries(response.data.selectedMonth.Employers);
         sals = response.data.selectedMonth.Employers;
         // setTotalSalariesPaid(response.data.selectedMonth.PaidSalaries);
@@ -115,7 +112,8 @@ function Salaries() {
         Voucher_Number: voucher,
       })
       .then((response) => {
-        message.success("Advance Paid Successfully!");
+        if (response.data.success) message.success(response.data.success);
+        if (response.data.error) message.error(response.data.error);
         console.log("Advance Payment REsponse: ", response.body);
       });
   };

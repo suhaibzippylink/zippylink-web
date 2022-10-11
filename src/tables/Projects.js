@@ -14,6 +14,7 @@ import {
   DatePicker,
   InputNumber,
   Progress,
+  Select,
 } from "antd";
 import { projectCols } from "../Data";
 import { ToTopOutlined } from "@ant-design/icons";
@@ -28,6 +29,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
 const { Title } = Typography;
+const { Option } = Select;
 const baseUrl =
   process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 let pros = [];
@@ -39,8 +41,10 @@ function Projects(props) {
   const [componentDisabled, setComponentDisabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [ammount, setAmmount] = useState(0);
+  const [rate, setRate] = useState(85.2);
   const [projectCode, setProjectCode] = useState();
   const [currency, setCurrency] = useState();
+  const [cFilter, setCFilter] = useState("USD");
   const [roleContent, setRoleContent] = useState(true);
   console.log("First Line in Projects Table: ", projects);
 
@@ -79,6 +83,7 @@ function Projects(props) {
         Email: authContext.user.Email,
         Voucher_Number,
         Currency: currency,
+        Exchange_Rate: rate,
       })
       .then((response) => {
         setVisible(false);
@@ -100,12 +105,22 @@ function Projects(props) {
       className="criclebox tablespace mb-24"
       title="Projects Table"
     >
+      <Select
+        defaultValue={cFilter}
+        onChange={(e) => {
+          setCFilter(e);
+        }}
+      >
+        <Option value="AFN">AFN</Option>
+        <Option value="USD">USD</Option>
+      </Select>
       <div className="table-responsive">
         <Spin
           tip="Loading..."
           spinning={loader}
           style={{ position: "relative", left: "50%", marginTop: 60 }}
         />
+
         <Table
           columns={projectCols}
           dataSource={pros.map((item) => ({
@@ -127,7 +142,6 @@ function Projects(props) {
                       alt=""
                     />
                   </a>
-
                   <div className="avatar-info">
                     <Title level={5}>{item.Customer}</Title>
                   </div>
@@ -135,66 +149,66 @@ function Projects(props) {
               </>
             ),
             code: <div className="semibold">{item.Project_Code}</div>,
-            title: <div className="semibold">{item.Project_Title}</div>,
+            title: (
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
+                <div className="semibold">{item.Project_Title}</div>
+              </Link>
+            ),
             start: (
               <div className="semibold">
-                {new Date(item.Date).getDate()}-{" "}
-                {new Date(item.Date).getMonth()}-{" "}
-                {new Date(item.Date).getFullYear()}
+                {new Date(item.Date).getDate()}/{new Date(item.Date).getMonth()}
+                /{new Date(item.Date).getFullYear()}
               </div>
             ),
             age: (
               <>
                 <div className="semibold">
-                  {item.Budget}
-                  {item.Currency === "AFN"
-                    ? "AFN"
-                    : item.Currency === "USD"
-                    ? "$"
-                    : item.Currency === "EUR"
-                    ? "€"
-                    : item.Currency === "GBP"
-                    ? "£"
-                    : item.Currency === "CNY"
-                    ? "¥"
-                    : ""}
+                  {cFilter == item.Currency
+                    ? item.Budget
+                    : item.Alternate_Budget}
+                  {cFilter === item.Currency
+                    ? item.Currency
+                    : item.Alternate_Currency}
                 </div>
               </>
             ),
-
+            brt: (
+              <>
+                <div className="semibold">
+                  {cFilter == item.Currency ? item.BRT : item.Alternate_BRT}
+                  {cFilter === item.Currency
+                    ? item.Currency
+                    : item.Alternate_Currency}
+                </div>
+              </>
+            ),
             cost: (
               <>
                 <div className="text-sm">
-                  {item.Cost}
-                  {item.Currency === "AFN"
-                    ? "AFN"
-                    : item.Currency === "USD"
-                    ? "$"
-                    : item.Currency === "EUR"
-                    ? "€"
-                    : item.Currency === "GBP"
-                    ? "£"
-                    : item.Currency === "CNY"
-                    ? "¥"
-                    : ""}
+                  {cFilter == item.Currency ? item.Cost : item.Alternate_Cost}
+                  {cFilter === item.Currency
+                    ? item.Currency
+                    : item.Alternate_Currency}
                 </div>
               </>
             ),
             revenue: (
               <>
                 <div className="text-sm">
-                  {(item.Budget - item.Cost).toFixed(2)}
-                  {item.Currency === "AFN"
-                    ? "AFN"
-                    : item.Currency === "USD"
-                    ? "$"
-                    : item.Currency === "EUR"
-                    ? "€"
-                    : item.Currency === "GBP"
-                    ? "£"
-                    : item.Currency === "CNY"
-                    ? "¥"
-                    : ""}
+                  {cFilter === item.Currency
+                    ? (item.NetAmmount - item.Cost).toFixed(2)
+                    : item.Alternate_Revenue.toFixed(2)}
+                  {cFilter === item.Currency
+                    ? item.Currency
+                    : item.Alternate_Currency}
                 </div>
               </>
             ),
@@ -367,7 +381,9 @@ function Projects(props) {
                 />
                 {currency}
               </Form.Item>
-
+              <Form.Item label="Exchange Rate">
+                <InputNumber defaultValue={rate} onChange={(e) => setRate(e)} />
+              </Form.Item>
               <Form.Item label="                       ">
                 <Button onClick={handleSubmit}>Submit</Button>
               </Form.Item>

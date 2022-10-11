@@ -31,6 +31,7 @@ export default function AddProject(props) {
   const [customers, setCustomers] = useState();
   const [budget, setBudget] = useState(0);
   const [cost, setCost] = useState(0);
+  const [exchageRate, setExchageRate] = useState();
   const [single, setSingle] = useState();
   const [file, setFile] = useState();
   const [filePath, setFilePath] = useState("");
@@ -78,7 +79,7 @@ export default function AddProject(props) {
   const handleUploadAnt = (e) => {
     //Change
     setControlUploadSpin(true);
-    console.log("e in ANtd: ", e);
+    console.log("e: ", e);
     if (e.file.status !== "uploading") {
       setControlUploadSpin(false);
     }
@@ -87,7 +88,7 @@ export default function AddProject(props) {
       setControlUploadSpin(false);
       setFile(e);
     } else if (e.file.status === "error") {
-      // message.error(`${e.file.name} file upload failed.`);
+      message.error(`${e.file.name} file upload failed.`);
       setControlUploadSpin(false);
     }
     console.log("File Antd: ", e.file);
@@ -152,6 +153,7 @@ export default function AddProject(props) {
           Account_Email: "zippylink@zippylink.net",
           Name: authContext.user.Name,
           Email: authContext.user.Email,
+          Exchange_Rate: exchageRate,
         })
         .then((response) => {
           console.log("Response: ", response.data);
@@ -178,7 +180,7 @@ export default function AddProject(props) {
     status: "",
     budget: 0,
     cost: 0,
-    currency: "",
+    currency: "AFN",
     description: "",
   };
 
@@ -285,7 +287,7 @@ export default function AddProject(props) {
                 <Select.Option value="null">Select</Select.Option>
                 <Select.Option value="Hardware">Hardware</Select.Option>
                 <Select.Option value="Software">Software</Select.Option>
-                <Select.Option value="Renewal">Renewal</Select.Option>
+                <Select.Option value="Reneval">Reneval</Select.Option>
                 <Select.Option value="Support">Support</Select.Option>
                 <Select.Option value="SLA">SLA</Select.Option>
                 <Select.Option value="Manage_Service">
@@ -298,21 +300,6 @@ export default function AddProject(props) {
               )}
             </Form.Item>
             <Form.Item label="Product Name">
-              {/* <Select
-                onChange={handleChange("product")}
-                defaultValue={
-                  props.location.state.code ? values.product : "null"
-                }
-              >
-                <Select.Option value="null">Select</Select.Option>
-                <Select.Option value="Dell">Dell</Select.Option>
-                <Select.Option value="Oracle">Oracle</Select.Option>
-                <Select.Option value="Frieght">Frieght</Select.Option>
-                <Select.Option value="Customer_Charges">
-                  Customer Charges
-                </Select.Option>
-                <Select.Option value="MDF">MDF</Select.Option>
-              </Select> */}
               <Input
                 placeholder="Product Name"
                 type="text"
@@ -379,7 +366,7 @@ export default function AddProject(props) {
                       style={{ width: 60 }}
                       onChange={handleChange("currency")}
                     >
-                      <Option value="AFN">AFN </Option>
+                      <Option value="AFN">AFN</Option>
                       <Option value="USD">$</Option>
                       <Option value="EUR">€</Option>
                       <Option value="GBP">£</Option>
@@ -402,13 +389,19 @@ export default function AddProject(props) {
                 }}
               >
                 <InputNumber
-                  // addonAfter={selectAfter}
                   defaultValue={100}
                   value={cost}
                   onChange={(e) => setCost(e)}
                 />
                 <h3> Current: {values.cost}</h3>
               </div>
+            </Form.Item>
+            <Form.Item label="Exchange Rate">
+              <InputNumber
+                defaultValue={88.2}
+                value={exchageRate}
+                onChange={(e) => setExchageRate(e)}
+              />
             </Form.Item>
             <Form.Item label="Description">
               <TextArea

@@ -466,19 +466,19 @@ export const projectCols = [
     dataIndex: "start",
   },
   {
-    title: "BUDGET",
+    title: "P.O VALUE",
     dataIndex: "age",
   },
-  // {
-  //   title: "MEMBERS",
-  //   dataIndex: "member",
-  // },
+  {
+    title: "BRT",
+    dataIndex: "brt",
+  },
   {
     title: "COST",
     dataIndex: "cost",
   },
   {
-    title: "Revenue",
+    title: "REVENUE",
     dataIndex: "revenue",
   },
   {

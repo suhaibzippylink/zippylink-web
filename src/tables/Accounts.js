@@ -112,7 +112,13 @@ function Accounts() {
         setCredit(response.data.accounts[0].Credit);
         acc = response.data.accounts;
         crd = response.data.accounts[0].Credit;
+        for (let i = 0; i < response.data.accounts[1].Credit.length; i++) {
+          crd.push(response.data.accounts[1].Credit[i]);
+        }
         dbt = response.data.accounts[0].Debit;
+        for (let i = 0; i < response.data.accounts[1].Debit.length; i++) {
+          dbt.push(response.data.accounts[1].Debit[i]);
+        }
         setDebit(response.data.accounts[0].Debit);
         setLoader(false);
       });
@@ -127,6 +133,7 @@ function Accounts() {
         ReceiveAs: formData.ReceiveAs,
         Ammount: since,
         Date: selectedDate,
+        Currency: formData.Currency,
       })
       .then((response) => {
         if (response.data.message) {
@@ -206,12 +213,18 @@ function Accounts() {
           ),
           Total_Credit: (
             <>
-              <h1>{item.Total_Credit}</h1>
+              <h1>
+                {item.Total_Credit.toFixed(2)}
+                {item.Currency}
+              </h1>
             </>
           ),
           Total_Debit: (
             <>
-              <h1>{item.Total_Debit}</h1>
+              <h1>
+                {item.Total_Debit.toFixed(2)}
+                {item.Currency}
+              </h1>
             </>
           ),
           Cash_Inhand: (
@@ -222,7 +235,8 @@ function Accounts() {
                 ) : (
                   <VerticalAlignBottomOutlined />
                 )}
-                {item.Cash_Inhand}
+                {item.Cash_Inhand.toFixed(2)}
+                {item.Currency}
               </h1>
             </>
           ),
@@ -256,7 +270,10 @@ function Accounts() {
           ),
           ReceiveAs: (
             <>
-              <p>{item.ReceiveAs}</p>
+              <p>
+                {item.ReceiveAs}
+                {item.Currency}
+              </p>
             </>
           ),
           Ammount: (
@@ -317,7 +334,10 @@ function Accounts() {
           ),
           Ammount: (
             <>
-              <p>{item.Ammount}</p>
+              <p>
+                {item.Ammount}
+                {item.Currency}
+              </p>
             </>
           ),
           action: (
@@ -389,6 +409,7 @@ function Accounts() {
               Voucher_Number: "",
               Ammount: 0,
               ReceiveAs: "",
+              Currency: "",
             }}
             onSubmit={(formData) => {
               debitAccount(formData, selectedDate, since);
@@ -452,6 +473,19 @@ function Accounts() {
                     <InputNumber
                       defaultValue={100}
                       onChange={(e) => setSince(e)}
+                      addonAfter={
+                        <Select
+                          defaultValue="USD"
+                          style={{ width: 60 }}
+                          onChange={handleChange("Currency")}
+                        >
+                          <Option value="AFN">AFN </Option>
+                          <Option value="USD">$</Option>
+                          <Option value="EUR">€</Option>
+                          <Option value="GBP">£</Option>
+                          <Option value="CNY">¥</Option>
+                        </Select>
+                      }
                     />
                   </div>
                 </Form.Item>

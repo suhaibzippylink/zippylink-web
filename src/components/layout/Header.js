@@ -164,9 +164,18 @@ const menu = (
     itemLayout="horizontal"
     dataSource={data}
     renderItem={(item) => (
-      <List.Item>
+      <List.Item
+        style={{
+          width: 250,
+          backgroundColor: "ActiveCaption",
+          borderRadius: 10,
+        }}
+        onClick={() => {
+          alert(`${item.title} 2 days ago`);
+        }}
+      >
         <List.Item.Meta
-          avatar={<Avatar shape="square" src={item.avatar} />}
+          avatar={<Avatar shape="circle" src={item.avatar} />}
           title={item.title}
           description={item.description}
         />
@@ -314,7 +323,11 @@ function Header({
         </Col>
         <Col span={24} md={18} className="header-control">
           <Badge size="small" count={4}>
-            <Dropdown overlay={menu} trigger={["click"]}>
+            <Dropdown
+              overlay={menu}
+              trigger={["click"]}
+              placement="bottomRight"
+            >
               <a
                 href="#pablo"
                 className="ant-dropdown-link"
