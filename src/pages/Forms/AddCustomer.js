@@ -47,7 +47,7 @@ export default function AddCustomer(props) {
 
     try {
       await axios
-        .post(`${baseUrl}/add-customer`, {
+        .post(`/add-customer`, {
           Name: formData.name,
           Email: formData.email,
           Year_Since_Working: since,

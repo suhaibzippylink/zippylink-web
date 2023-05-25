@@ -15,8 +15,7 @@ import AuthContext from "../auth/Context";
 import { salaryCols } from "../Data";
 const { Title } = Typography;
 let sals = [];
-const baseUrl =
-  process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
+const baseUrl = process.env.SERVER_URL;
 function Salaries() {
   const authContext = useContext(AuthContext);
   const [salaries, setSalaries] = useState();
@@ -46,7 +45,7 @@ function Salaries() {
     const date = `${toMonthName(m + 1)}-${year}`;
     alert(date);
     await axios
-      .post(`${baseUrl}/add-newMonth`, {
+      .post(`/add-newMonth`, {
         Month: date,
       })
       .then((response) => {
@@ -58,7 +57,7 @@ function Salaries() {
   const paySalary = async (id, month, payDate, payDeduction, voucher) => {
     alert(payDeduction);
     await axios
-      .post(`${baseUrl}/pay-monthly`, {
+      .post(`/pay-monthly`, {
         month,
         id,
         payDate,
@@ -82,7 +81,7 @@ function Salaries() {
     setStringMonth(date);
     // alert(date);
     axios
-      .post(`${baseUrl}/selected-month`, {
+      .post(`/selected-month`, {
         month: date,
       })
       .then((response) => {
@@ -102,7 +101,7 @@ function Salaries() {
 
   const payAdvance = async (id, month, payment, voucher) => {
     await axios
-      .post(`${baseUrl}/pay-advance`, {
+      .post(`/pay-advance`, {
         AdvancePay: payment,
         month,
         id,

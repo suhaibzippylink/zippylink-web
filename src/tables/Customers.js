@@ -15,6 +15,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import pencil from "../assets/images/pencil.svg";
 import delet from "../assets/images/delete.png";
+import { style } from "../Config/Design";
 const { Title } = Typography;
 const baseUrl =
   process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
@@ -26,7 +27,7 @@ function Customers(props) {
 
   const getData = async () => {
     await axios
-      .get(`${baseUrl}/all-cutomers`)
+      .get(`/all-cutomers`)
       .then((response) => {
         setCustomers(response.data.allCustomers);
         custs = response.data.allCustomers;
@@ -37,7 +38,7 @@ function Customers(props) {
   };
   const deleteCustomer = async (email) => {
     await axios
-      .post(`${baseUrl}/delete-customer`, {
+      .post(`/delete-customer`, {
         Email: email,
       })
       .then((response) => {
@@ -62,6 +63,7 @@ function Customers(props) {
         style={{ position: "relative", left: "50%", marginTop: 60 }}
       />
       <Table
+        size="small"
         columns={customerCols}
         dataSource={custs.map((item) => ({
           key: "1",
@@ -126,8 +128,16 @@ function Customers(props) {
         }}
       />
       <div className="uploadfile pb-15 shadow-none">
-        <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />}>
+        <Button
+          style={{ backgroundColor: style.btnColor, color: style.btnTextColor }}
+          type="dashed"
+          className="ant-full-box"
+          icon={<ToTopOutlined />}
+        >
           <Link
+            style={{
+              color: style.btnTextColor,
+            }}
             to={{
               pathname: "/add-customer",
               state: {

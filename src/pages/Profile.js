@@ -21,9 +21,7 @@ import {
   VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 
-import BgProfile from "../assets/images/bg-profile.jpg";
 import home9 from "../assets/ZippyImages/9.jpg";
-import profilavatar from "../assets/images/face-1.jpg";
 import convesionImg from "../assets/images/face-3.jpg";
 import convesionImg2 from "../assets/images/face-4.jpg";
 import convesionImg3 from "../assets/images/face-5.jpeg";
@@ -33,6 +31,7 @@ import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
 import AuthContext from "../auth/Context";
+import { style } from "../Config/Design";
 // import pfP from "../../assets/images/zippyLogo2.jpg";
 function Profile() {
   const [imageURL, setImageURL] = useState(false);
@@ -176,7 +175,7 @@ function Profile() {
                 </div>
               </Avatar.Group>
             </Col>
-            <Col
+            {/* <Col
               span={24}
               md={12}
               style={{
@@ -190,13 +189,13 @@ function Profile() {
                 <Radio.Button value="b">TEAMS</Radio.Button>
                 <Radio.Button value="c">PROJECTS</Radio.Button>
               </Radio.Group>
-            </Col>
+            </Col> */}
           </Row>
         }
       ></Card>
 
       <Row gutter={[24, 0]}>
-        <Col span={24} md={8} className="mb-24 ">
+        {/* <Col span={24} md={8} className="mb-24 ">
           <Card
             bordered={false}
             className="header-solid h-full"
@@ -238,8 +237,8 @@ function Profile() {
               </li>
             </ul>
           </Card>
-        </Col>
-        <Col span={24} md={8} className="mb-24">
+        </Col> */}
+        <Col span={24} md={24} className="mb-24">
           <Card
             bordered={false}
             title={<h6 className="font-semibold m-0">Profile Information</h6>}
@@ -247,15 +246,18 @@ function Profile() {
             extra={<Button type="link">{pencil}</Button>}
             bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
           >
-            <p className="text-dark">
+            {/* <p className="text-dark">
               {" "}
               Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer
               is no. If two equally difficult paths, choose the one more painful
               in the short term (pain avoidance is creating an illusion of
               equality).{" "}
-            </p>
+            </p> */}
             <hr className="my-25" />
-            <Descriptions title="Contact Information">
+            <Descriptions
+              title="Contact Information"
+              style={{ fontFamily: style.accountFont }}
+            >
               <Descriptions.Item label="Full Name" span={3}>
                 {authContext.user.Name}
               </Descriptions.Item>

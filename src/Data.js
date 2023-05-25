@@ -20,6 +20,15 @@ import team4 from "./assets/images/team-4.jpg";
 import { Link } from "react-router-dom";
 const { Title } = Typography;
 
+//About Zippylink
+export const about = {
+  website_link: "https://zippylink-web.netlify.app/",
+  what_we_do:
+    "We Provide wide range of services in the field of education, government services, information technologies, Managed Services, system integration and ICT infrastructure establishment solutions. The company specializes in bringing solutions to ensure business optimization and sustainable growth.",
+  who_we_are:
+    "ZippyLink ICT Services is a fast-growing Systems Integration company. With rich experience at its background, and industry lead man power of more than 15 years of experience, ZIPPY LINK is considered as an expert in industry-leading technology platforms. We specialize in analysing, designing, integrating and executing an infrastructure that has high integrity and stability to deliver competitive advantage for your business. Our Motto is to solve business Challenges with Information Technology Solutions in a creative way.",
+};
+
 // Employers Table Data
 export const employerCols = [
   {
@@ -918,7 +927,8 @@ export const expencesCols = [
   { title: "Expence Code", dataIndex: "Exp_Code", key: "Exp_Code" },
   { title: "Expence Title", dataIndex: "Exp_Title", key: "Exp_Title" },
   { title: "Item", dataIndex: "Item", key: "Item" },
-  { title: "Cost", dataIndex: "Cost", key: "Cost" },
+  { title: "USD Cost", dataIndex: "USD_Cost", key: "USD_Cost" },
+  { title: "AFN Cost", dataIndex: "AFN_Cost", key: "AFN_Cost" },
   {
     title: "Action",
     dataIndex: "action",
@@ -963,10 +973,37 @@ export const expencesData = [
 //Accounts Table Data
 export const accountsCols = [
   { title: "Account Name", dataIndex: "Account_Name", key: "Account_Name" },
-  { title: "Account Email", dataIndex: "Account_Email", key: "Account_Email" },
-  { title: "Total Credit", dataIndex: "Total_Credit", key: "Total_Credit" },
-  { title: "Total Debit", dataIndex: "Total_Debit", key: "Total_Debit" },
-  { title: "Cash Inhand", dataIndex: "Cash_Inhand", key: "Cash_Inhand" },
+  // { title: "Account Email", dataIndex: "Account_Email", key: "Account_Email" },
+  {
+    title: "USD Total Credit",
+    dataIndex: "USD_Total_Credit",
+    key: "USD_Total_Credit",
+  },
+  {
+    title: "USD Total Debit",
+    dataIndex: "USD_Total_Debit",
+    key: "USD_Total_Debit",
+  },
+  {
+    title: "USD Cash Inhand",
+    dataIndex: "USD_Cash_Inhand",
+    key: "USD_Cash_Inhand",
+  },
+  {
+    title: "AFN Total Credit",
+    dataIndex: "AFN_Total_Credit",
+    key: "AFN_Total_Credit",
+  },
+  {
+    title: "AFN Total Debit",
+    dataIndex: "AFN_Total_Debit",
+    key: "AFN_Total_Debit",
+  },
+  {
+    title: "AFN Cash Inhand",
+    dataIndex: "AFN_Cash_Inhand",
+    key: "AFN_Cash_Inhand",
+  },
 ];
 
 //Credit Table Data

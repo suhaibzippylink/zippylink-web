@@ -438,7 +438,7 @@ function Header({
                     </Button>
                   </ButtonContainer>
                 </div>
-                <div className="fixed-nav mb-2">
+                {/* <div className="fixed-nav mb-2">
                   <Title level={5}>Navbar Fixed </Title>
                   <Switch onChange={(e) => handleFixedNavbar(e)} />
                 </div>
@@ -463,7 +463,7 @@ function Header({
                     <Button type="black">{<TwitterOutlined />}TWEET</Button>
                     <Button type="black">{<FacebookFilled />}SHARE</Button>
                   </ButtonContainer>
-                </div>
+                </div> */}
               </div>
             </div>
           </Drawer>

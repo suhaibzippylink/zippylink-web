@@ -28,6 +28,7 @@ import axios from "axios";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
+import { style } from "../Config/Design";
 const { Title } = Typography;
 const { Option } = Select;
 const baseUrl =
@@ -58,7 +59,7 @@ function Projects(props) {
   };
   const getData = async () => {
     await axios
-      .get(`${baseUrl}/all-projects`)
+      .get(`/all-projects`)
       .then((response) => {
         setProjects(response.data.Projects);
         pros = response.data.Projects;
@@ -72,7 +73,7 @@ function Projects(props) {
   const addProjectCost = (formData) => {
     const Voucher_Number = prompt("Voucher Number? ");
     axios
-      .post(`${baseUrl}/add-project-cost`, {
+      .post(`/add-project-cost`, {
         projectCode,
         Cost_Title: formData.Cost_Title,
         Cost_Type: formData.Cost_Type,
@@ -82,8 +83,8 @@ function Projects(props) {
         Name: authContext.user.Name,
         Email: authContext.user.Email,
         Voucher_Number,
-        Currency: currency,
-        Exchange_Rate: rate,
+        Cost_Currency: formData.currency ? formData.currency : "AFN",
+        Exchange_Rate: rate ? rate : 88.2,
       })
       .then((response) => {
         setVisible(false);
@@ -122,6 +123,7 @@ function Projects(props) {
         />
 
         <Table
+          size="small"
           columns={projectCols}
           dataSource={pros.map((item) => ({
             key: "1",
@@ -142,13 +144,35 @@ function Projects(props) {
                       alt=""
                     />
                   </a>
-                  <div className="avatar-info">
-                    <Title level={5}>{item.Customer}</Title>
-                  </div>
+                  <Link
+                    disabled={roleContent}
+                    to={{
+                      pathname: "/project-details",
+                      data: {
+                        item,
+                      },
+                    }}
+                  >
+                    <div className="avatar-info">
+                      <Title level={5}>{item.Customer}</Title>
+                    </div>
+                  </Link>
                 </Avatar.Group>
               </>
             ),
-            code: <div className="semibold">{item.Project_Code}</div>,
+            code: (
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
+                <div className="semibold">{item.Project_Code}</div>{" "}
+              </Link>
+            ),
             title: (
               <Link
                 disabled={roleContent}
@@ -163,59 +187,114 @@ function Projects(props) {
               </Link>
             ),
             start: (
-              <div className="semibold">
-                {new Date(item.Date).getDate()}/{new Date(item.Date).getMonth()}
-                /{new Date(item.Date).getFullYear()}
-              </div>
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
+                <div className="semibold">
+                  {new Date(item.Date).getDate()}/
+                  {new Date(item.Date).getMonth()}/
+                  {new Date(item.Date).getFullYear()}
+                </div>
+              </Link>
             ),
             age: (
-              <>
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
                 <div className="semibold">
                   {cFilter == item.Currency
-                    ? item.Budget
-                    : item.Alternate_Budget}
+                    ? item.Budget.toLocaleString("en-US")
+                    : item.Alternate_Budget.toLocaleString("en-US")}
                   {cFilter === item.Currency
                     ? item.Currency
                     : item.Alternate_Currency}
                 </div>
-              </>
+              </Link>
             ),
             brt: (
-              <>
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
                 <div className="semibold">
-                  {cFilter == item.Currency ? item.BRT : item.Alternate_BRT}
+                  {cFilter == item.Currency
+                    ? item.BRT.toLocaleString("en-US")
+                    : item.Alternate_BRT.toLocaleString("en-US")}
                   {cFilter === item.Currency
                     ? item.Currency
                     : item.Alternate_Currency}
                 </div>
-              </>
+              </Link>
             ),
             cost: (
-              <>
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
                 <div className="text-sm">
-                  {cFilter == item.Currency ? item.Cost : item.Alternate_Cost}
+                  {cFilter == item.Currency
+                    ? item.Cost.toLocaleString("en-US")
+                    : item.Alternate_Cost.toLocaleString("en-US")}
                   {cFilter === item.Currency
                     ? item.Currency
                     : item.Alternate_Currency}
                 </div>
-              </>
+              </Link>
             ),
             revenue: (
-              <>
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
                 <div className="text-sm">
                   {cFilter === item.Currency
-                    ? (item.NetAmmount - item.Cost).toFixed(2)
-                    : item.Alternate_Revenue.toFixed(2)}
+                    ? (item.NetAmmount - item.Cost).toLocaleString("en-US")
+                    : item.Alternate_Revenue.toLocaleString("en-US")}
                   {cFilter === item.Currency
                     ? item.Currency
                     : item.Alternate_Currency}
                 </div>
-              </>
+              </Link>
             ),
             status: (
-              <>
+              <Link
+                disabled={roleContent}
+                to={{
+                  pathname: "/project-details",
+                  data: {
+                    item,
+                  },
+                }}
+              >
                 <div className="text-sm">{item.Status}</div>
-                {item.Status === "Completed" ? (
+                {item.Status === "Complete" ? (
                   <Progress percent={100} size="small" />
                 ) : item.Status === "In Progress" ? (
                   <Progress
@@ -227,9 +306,9 @@ function Projects(props) {
                     status="active"
                   />
                 ) : item.Status === "Cancelled" ? (
-                  <Progress percent={15} size="small" status="exception" />
+                  <Progress percent={13} size="small" status="exception" />
                 ) : null}
-              </>
+              </Link>
             ),
             action: (
               <div className="ant-progress-project">
@@ -291,8 +370,14 @@ function Projects(props) {
         />
       </div>
       <div className="uploadfile pb-15 shadow-none">
-        <Button type="dashed" className="ant-full-box" icon={<ToTopOutlined />}>
+        <Button
+          style={{ backgroundColor: style.btnColor, color: style.btnTextColor }}
+          type="dashed"
+          className="ant-full-box"
+          icon={<ToTopOutlined />}
+        >
           <Link
+            style={{ color: style.btnTextColor }}
             to={{
               pathname: "/add-project",
               state: {
@@ -319,6 +404,7 @@ function Projects(props) {
           initialValues={{
             Cost_Title: "",
             Cost_Type: "",
+            currency: "",
           }}
           onSubmit={(formData) => {
             addProjectCost(formData);
@@ -376,10 +462,23 @@ function Projects(props) {
 
               <Form.Item label="Ammount">
                 <InputNumber
+                  addonAfter={
+                    <Select
+                      defaultValue="AFN"
+                      style={{ width: 60 }}
+                      onChange={handleChange("currency")}
+                    >
+                      <Option value="AFN">AFN</Option>
+                      <Option value="USD">$</Option>
+                      <Option value="EUR">€</Option>
+                      <Option value="GBP">£</Option>
+                      <Option value="CNY">¥</Option>
+                    </Select>
+                  }
                   defaultValue={100}
                   onChange={(e) => setAmmount(e)}
                 />
-                {currency}
+                &nbsp; Project Currency = {currency}
               </Form.Item>
               <Form.Item label="Exchange Rate">
                 <InputNumber defaultValue={rate} onChange={(e) => setRate(e)} />

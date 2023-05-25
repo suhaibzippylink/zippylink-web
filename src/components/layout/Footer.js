@@ -1,17 +1,6 @@
-/*!
-  =========================================================
-  * Muse Ant Design Dashboard - v1.0.0
-  =========================================================
-  * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-  * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-  * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-  * Coded by Creative Tim
-  =========================================================
-  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { Layout, Row, Col } from "antd";
 import { HeartFilled } from "@ant-design/icons";
+import { about } from "../../Data";
 
 function Footer() {
   const { Footer: AntFooter } = Layout;
@@ -24,13 +13,13 @@ function Footer() {
             © 2022, made with
             {<HeartFilled />} by
             <a
-              href="https://suhaib-islam.netlify.app/"
+              href="https://suhaib-qanooni.vercel.app/"
               className="font-weight-bold"
               target="_blank"
             >
               Suhaib Qanooni
             </a>
-            for a better web.
+            all rights reserved.
           </div>
         </Col>
         <Col xs={24} md={12} lg={12}>
@@ -38,38 +27,20 @@ function Footer() {
             <ul>
               <li className="nav-item">
                 <a
-                  href="#pablo"
+                  href={about.website_link}
                   className="nav-link text-muted"
                   target="_blank"
                 >
-                  Zippy Link
+                  <img src="./zippyLogo.png" width={100} height={30} />
                 </a>
               </li>
               <li className="nav-item">
                 <a
-                  href="#pablo"
+                  href={about.website_link + "#about"}
                   className="nav-link text-muted"
                   target="_blank"
                 >
                   About Us
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  href="#pablo"
-                  className="nav-link text-muted"
-                  target="_blank"
-                >
-                  Blog
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  href="#pablo"
-                  className="nav-link pe-0 text-muted"
-                  target="_blank"
-                >
-                  License
                 </a>
               </li>
             </ul>

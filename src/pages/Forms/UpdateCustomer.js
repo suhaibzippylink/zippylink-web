@@ -51,7 +51,7 @@ export default function UpdateCustomer(props) {
 
     try {
       await axios
-        .post(`${baseUrl}/update-customer`, {
+        .post(`/update-customer`, {
           id: props.location.state.id,
           CreatedAt: date,
           Name: formData.name,

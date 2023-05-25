@@ -55,7 +55,7 @@ export default function AddProject(props) {
   };
   const getData = async () => {
     await axios
-      .get(`${baseUrl}/all-cutomers`)
+      .get(`/all-cutomers`)
       .then((response) => {
         setCustomers(response.data.allCustomers);
         custs = response.data.allCustomers;
@@ -66,7 +66,7 @@ export default function AddProject(props) {
   const fetchProject = async () => {
     console.log("Code to Filter: ", props.location.state.code);
     await axios
-      .post(`${baseUrl}/single-Project`, {
+      .post(`/single-Project`, {
         Project_Code: props.location.state.code,
       })
       .then((response) => {
@@ -100,8 +100,8 @@ export default function AddProject(props) {
     console.log("Customers in Add Project: ", custs);
     if (props.location.state.code) {
       fetchProject();
-      route = `${baseUrl}/update-project`;
-    } else route = `${baseUrl}/add-project`;
+      route = `/update-project`;
+    } else route = `/add-project`;
   }, [single, file]);
 
   const addProject = async (formData, selectedDate, budget, cost) => {
@@ -120,7 +120,7 @@ export default function AddProject(props) {
     console.log("Form Data: ", fileFormData.get("file"));
     let path = "";
     await axios
-      .post(`${baseUrl}/file-upload/${formData.code}`, fileFormData)
+      .post(`/file-upload/${formData.code}`, fileFormData)
       .then((response) => {
         console.log("Response file upload: ", response.data);
         setFilePath(response.data.file_url);
@@ -381,7 +381,7 @@ export default function AddProject(props) {
               </div>
             </Form.Item>
 
-            <Form.Item label="Project Cost">
+            {/* <Form.Item label="Project Cost">
               <div
                 style={{
                   display: "flex",
@@ -395,7 +395,7 @@ export default function AddProject(props) {
                 />
                 <h3> Current: {values.cost}</h3>
               </div>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item label="Exchange Rate">
               <InputNumber
                 defaultValue={88.2}

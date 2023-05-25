@@ -12,7 +12,7 @@ function Tables() {
   const [employers, setEmployers] = useState();
 
   const getData = async () => {
-    axios.get(`${baseUrl}/allEmployers`, {}).then((res) => {
+    axios.get(`/allEmployers`, {}).then((res) => {
       console.log("RESPONSE: ", res.data.All_Users);
       setEmployers(res.data.All_Users);
     });

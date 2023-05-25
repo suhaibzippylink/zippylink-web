@@ -53,7 +53,7 @@ export default function SignIn() {
   // };
   const login = async (email, password) => {
     setLoader(true);
-    fetch(`${baseUrl}/login`, {
+    fetch(`/login`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -84,7 +84,7 @@ export default function SignIn() {
       <Layout className="layout-default layout-signin">
         <Header>
           <div className="header-col header-brand">
-            <h1>Zippy Link ICT Services</h1>
+            <img src="./zippyLogo.png" width={160} height={70} alt="LOGO" />
           </div>
         </Header>
         <Content className="signin">
@@ -94,7 +94,8 @@ export default function SignIn() {
               lg={{ span: 6, offset: 2 }}
               md={{ span: 12 }}
             >
-              <Title className="mb-15">Sign In</Title>
+              <img src="./zippyLogo.png" width={300} height={140} alt="LOGO" />
+              {/* <Title className="mb-15">Sign In</Title> */}
               <Title className="font-regular text-muted" level={5}>
                 Enter your email and password to sign in
               </Title>

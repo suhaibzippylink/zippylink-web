@@ -16,7 +16,7 @@ function Employers() {
 
   const getData = async () => {
     await axios
-      .get(`${baseUrl}/allEmployers`)
+      .get(`/allEmployers`)
       .then((res) => {
         console.log("RESPONSE in Employers: ", res.data.All_Users);
         setEmployers(res.data.All_Users);
@@ -47,6 +47,7 @@ function Employers() {
           style={{ position: "relative", left: "50%", marginTop: 60 }}
         />
         <Table
+          size="small"
           columns={employerCols}
           dataSource={emps.map((item) => ({
             key: "1",
@@ -85,8 +86,8 @@ function Employers() {
               <>
                 <div className="ant-employed">
                   <span>
-                    {new Date(item.StartDate).getDate()} -
-                    {new Date(item.StartDate).getMonth()} -
+                    {new Date(item.StartDate).getDate()}/
+                    {new Date(item.StartDate).getMonth() + 1}/
                     {new Date(item.StartDate).getFullYear()}
                   </span>
                 </div>

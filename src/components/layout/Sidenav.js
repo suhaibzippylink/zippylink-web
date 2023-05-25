@@ -151,11 +151,8 @@ function Sidenav({ color }) {
 
   return (
     <>
-      <div className="brand">
-        <img src={logo} alt="" />
-        <a href="/">
-          <span style={{ fontSize: 24 }}>Zippy Link</span>
-        </a>
+      <div>
+        <img src="./zippyLogo.png" height={100} width="100%" />
       </div>
       <hr />
       <Menu theme="light" mode="inline">

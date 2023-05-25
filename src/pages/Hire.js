@@ -15,6 +15,7 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { style } from "../Config/Design";
 const { TextArea } = Input;
 const { Option } = Select;
 const baseUrl =
@@ -57,7 +58,7 @@ export default function Hire() {
     console.log("Added Customer: ", date);
     try {
       await axios
-        .post(`${baseUrl}/add-employer`, {
+        .post(`/add-employer`, {
           month: m,
           Name: formData.name,
           Email: formData.email,
@@ -66,8 +67,9 @@ export default function Hire() {
           Gender: formData.gender,
           Designation: formData.designation,
           StartDate: date,
-          BasicSalary: salary,
+          BasicSalary: salary ? salary : 100,
           description: formData.description,
+          currency: formData.currency ? formData.currency : "AFN",
         })
         .then((response) => {
           console.log("Response: ", response.data);
@@ -79,29 +81,29 @@ export default function Hire() {
       message.error(error);
     }
   };
-  const selectAfter = (
-    <Select defaultValue="AFN" style={{ width: 60 }}>
-      <Option value="AFN">AFN</Option>
-      <Option value="USD">$</Option>
-      <Option value="EUR">€</Option>
-      <Option value="GBP">£</Option>
-      <Option value="CNY">¥</Option>
-    </Select>
-  );
+
   return (
     <>
-      <Button
+      <div
         style={{
-          position: "relative",
-          left: "25%",
-
+          display: "flex",
+          flexDirection: "row",
+          backgroundColor: style.labelColor,
           margin: 10,
-          width: 300,
-          height: 50,
+          width: "100%",
+          height: 55,
         }}
       >
-        <h1 style={{ fontSize: 30, color: "skyblue" }}>Zippy Link Hiring</h1>
-      </Button>
+        <img src="./zippyLogo.png" alt="logo" width={140} height={60} />
+        <h1
+          style={{
+            fontSize: 30,
+            color: style.btnTextColor,
+          }}
+        >
+          Zippy Link Hiring
+        </h1>
+      </div>
 
       <Formik
         style={{}}
@@ -114,6 +116,7 @@ export default function Hire() {
           startDate: "",
           basicSalary: 0,
           description: "",
+          currency: "",
         }}
         onSubmit={(formData) => {
           addCostomer(formData, selectedDate, salary);
@@ -222,7 +225,19 @@ export default function Hire() {
                 <p style={{ color: "red" }}>{errors.basicSalary}</p>
               )} */}
               <InputNumber
-                addonAfter={selectAfter}
+                addonAfter={
+                  <Select
+                    defaultValue="AFN"
+                    style={{ width: 60 }}
+                    onChange={handleChange("currency")}
+                  >
+                    <Option value="AFN">AFN</Option>
+                    <Option value="USD">$</Option>
+                    <Option value="EUR">€</Option>
+                    <Option value="GBP">£</Option>
+                    <Option value="CNY">¥</Option>
+                  </Select>
+                }
                 defaultValue={100}
                 onChange={(e) => setSalary(e)}
               />
@@ -247,9 +262,15 @@ export default function Hire() {
                   </div>
                 </div>
               </Upload>
-            </Form.Item>
-            <Form.Item label="">
-              <Button onClick={handleSubmit}>Submit</Button>
+              <Button
+                onClick={handleSubmit}
+                style={{
+                  backgroundColor: style.btnColor,
+                  color: style.btnTextColor,
+                }}
+              >
+                Submit
+              </Button>
             </Form.Item>
           </Form>
         )}

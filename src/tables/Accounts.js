@@ -20,6 +20,7 @@ import { ToTopOutlined, VerticalAlignBottomOutlined } from "@ant-design/icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
+import { style } from "../Config/Design";
 const { Option } = Select;
 const baseUrl =
   process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
@@ -33,6 +34,7 @@ function Accounts() {
   const [debit, setDebit] = useState();
   const [loader, setLoader] = useState(true);
   const [totalCost, setTotalCost] = useState(0);
+  const [totalCostUSD, setTotalCostUSD] = useState(0);
   const [stringMonth, setStringMonth] = useState("August-2022");
   const [selectedDate, setSelectedDate] = useState(null);
   const [fetchMonth, setFetchMonth] = useState(new Date());
@@ -60,12 +62,23 @@ function Accounts() {
     setComponentDisabled(disabled);
   };
 
-  const calculateCost = () => {
+  const calculateCostAFN = () => {
     let sum = 0;
     for (var i = 0; i < dbt.length; i++) {
-      sum += dbt[i].Ammount;
+      if (dbt[i].Currency === "AFN") {
+        sum += dbt[i].Ammount;
+      }
     }
     setTotalCost(sum);
+  };
+  const calculateCostUSD = () => {
+    let sum = 0;
+    for (var i = 0; i < dbt.length; i++) {
+      if (dbt[i].Currency === "USD") {
+        sum += dbt[i].Ammount;
+      }
+    }
+    setTotalCostUSD(sum);
   };
   function toMonthName(monthNumber) {
     const date = new Date();
@@ -99,7 +112,7 @@ function Accounts() {
     const date = `${toMonthName(m + 1)}-${year}`;
     setStringMonth(date);
     axios
-      .get(`${baseUrl}/get-accounts-details`, {
+      .get(`/get-accounts-details`, {
         month: date,
       })
       .then((response) => {
@@ -112,20 +125,16 @@ function Accounts() {
         setCredit(response.data.accounts[0].Credit);
         acc = response.data.accounts;
         crd = response.data.accounts[0].Credit;
-        for (let i = 0; i < response.data.accounts[1].Credit.length; i++) {
-          crd.push(response.data.accounts[1].Credit[i]);
-        }
+
         dbt = response.data.accounts[0].Debit;
-        for (let i = 0; i < response.data.accounts[1].Debit.length; i++) {
-          dbt.push(response.data.accounts[1].Debit[i]);
-        }
+
         setDebit(response.data.accounts[0].Debit);
         setLoader(false);
       });
   };
   const debitAccount = async (formData) => {
     await axios
-      .post(`${baseUrl}/debit-account`, {
+      .post(`/debit-account`, {
         Account_Email: process.env.ACCOUNT_EMAIL || "zippylink@zippylink.net",
         Name: authContext.user.Name,
         Email: authContext.user.Email,
@@ -145,7 +154,7 @@ function Accounts() {
   const creditAccount = async (formData) => {
     setLoader(true);
     await axios
-      .post(`${baseUrl}/credit-account`, {
+      .post(`/credit-account`, {
         Account_Email: process.env.ACCOUNT_EMAIL || "zippylink@zippylink.net",
         Name: authContext.user.Name,
         Email: authContext.user.Email,
@@ -170,7 +179,7 @@ function Accounts() {
   const deleteDebitEntry = (id) => {
     setDeleteLoader(true);
     axios
-      .post(`${baseUrl}/delete-debited`, {
+      .post(`/delete-debited`, {
         id,
         Account_Email: process.env.ACCOUNT_EMAIL || "zippylink@zippylink.net",
       })
@@ -198,6 +207,8 @@ function Accounts() {
         style={{ position: "relative", left: "50%", marginTop: 60 }}
       />
       <Table
+        size="small"
+        style={{ fontFamily: style.accountFont }}
         columns={accountsCols}
         dataSource={acc.map((item) => ({
           key: "1",
@@ -206,37 +217,52 @@ function Accounts() {
               <h1>{item.Account_Name}</h1>
             </>
           ),
-          Account_Email: (
+          // Account_Email: (
+          //   <>
+          //     <h1>{item.Account_Email}</h1>
+          //   </>
+          // ),
+          USD_Total_Credit: (
             <>
-              <h1>{item.Account_Email}</h1>
+              <h1>{item.USD_Total_Credit.toLocaleString("en-US")}$</h1>
             </>
           ),
-          Total_Credit: (
+          USD_Total_Debit: (
             <>
-              <h1>
-                {item.Total_Credit.toFixed(2)}
-                {item.Currency}
-              </h1>
+              <h1>{item.USD_Total_Debit.toLocaleString("en-US")}$</h1>
             </>
           ),
-          Total_Debit: (
+          USD_Cash_Inhand: (
             <>
-              <h1>
-                {item.Total_Debit.toFixed(2)}
-                {item.Currency}
-              </h1>
-            </>
-          ),
-          Cash_Inhand: (
-            <>
-              <h1 style={{ color: item.Cash_Inhand > 0 ? "Green" : "red" }}>
-                {item.Cash_Inhand > 0 ? (
+              <h1 style={{ color: item.USD_Cash_Inhand > 0 ? "Green" : "red" }}>
+                {item.USD_Cash_Inhand > 0 ? (
                   <ToTopOutlined />
                 ) : (
                   <VerticalAlignBottomOutlined />
                 )}
-                {item.Cash_Inhand.toFixed(2)}
-                {item.Currency}
+                {item.USD_Cash_Inhand.toLocaleString("en-US")}$
+              </h1>
+            </>
+          ),
+          AFN_Total_Credit: (
+            <>
+              <h1>{item.AFN_Total_Credit.toLocaleString("en-US")}AFN</h1>
+            </>
+          ),
+          AFN_Total_Debit: (
+            <>
+              <h1>{item.AFN_Total_Debit.toLocaleString("en-US")}AFN</h1>
+            </>
+          ),
+          AFN_Cash_Inhand: (
+            <>
+              <h1 style={{ color: item.AFN_Cash_Inhand > 0 ? "Green" : "red" }}>
+                {item.AFN_Cash_Inhand > 0 ? (
+                  <ToTopOutlined />
+                ) : (
+                  <VerticalAlignBottomOutlined />
+                )}
+                {item.AFN_Cash_Inhand.toLocaleString("en-US")}AFN
               </h1>
             </>
           ),
@@ -244,6 +270,7 @@ function Accounts() {
       />
       <h3 style={{ marginLeft: 20 }}>Credit</h3>
       <Table
+        size="small"
         columns={accountsCreditCols}
         dataSource={crd.map((item) => ({
           key: "1",
@@ -278,7 +305,7 @@ function Accounts() {
           ),
           Ammount: (
             <>
-              <p>{item.Ammount}</p>
+              <p>{item.Ammount.toLocaleString("en-US")}</p>
             </>
           ),
           action: (
@@ -295,6 +322,7 @@ function Accounts() {
         }}
       />
       <Button
+        style={{ backgroundColor: style.btnColor, color: style.btnTextColor }}
         type="dashed"
         className="ant-full-box"
         icon={<ToTopOutlined />}
@@ -304,6 +332,7 @@ function Accounts() {
       </Button>
       <h3 style={{ marginLeft: 20 }}>Debit</h3>
       <Table
+        size="small"
         columns={accountsDebitCols}
         dataSource={dbt.map((item) => ({
           key: "1",
@@ -335,7 +364,7 @@ function Accounts() {
           Ammount: (
             <>
               <p>
-                {item.Ammount}
+                {item.Ammount.toLocaleString("en-US")}
                 {item.Currency}
               </p>
             </>
@@ -345,7 +374,7 @@ function Accounts() {
               <Popconfirm
                 title="Are you sure you want to delete this Entry?"
                 onConfirm={() => {
-                  alert("This Option is Desabled");
+                  alert("This Option is Disabled");
                   // deleteDebitEntry(item._id);
                 }}
                 onCancel={() => message.error("Cancelled")}
@@ -375,17 +404,31 @@ function Accounts() {
       <h1
         style={{
           position: "relative",
-          left: "65%",
+          left: "60%",
           color: "red",
+          fontFamily: style.accountFont,
         }}
       >
-        Total Cost: <a onClick={() => calculateCost()}>Calc</a>
+        Total USD Cost: <a onClick={() => calculateCostUSD()}>Calculate</a>
         &nbsp;&nbsp;&nbsp;
-        {totalCost}
+        {totalCostUSD.toLocaleString("en-US")}$
+      </h1>
+      <h1
+        style={{
+          position: "relative",
+          left: "60%",
+          color: "red",
+          fontFamily: style.accountFont,
+        }}
+      >
+        Total AFN Cost: <a onClick={() => calculateCostAFN()}>Calculate</a>
+        &nbsp;&nbsp;&nbsp;
+        {totalCost.toLocaleString("en-US")}AFN
       </h1>
 
       <>
         <Button
+          style={{ backgroundColor: style.btnColor, color: style.btnTextColor }}
           type="dashed"
           className="ant-full-box"
           icon={<ToTopOutlined />}

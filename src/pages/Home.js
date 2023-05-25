@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 
-import { Card, Col, Row, Typography, Carousel } from "antd";
+import { Card, Col, Row, Typography, Carousel, Divider } from "antd";
 
-import home1 from "../assets/ZippyImages/1.jpg";
 import home2 from "../assets/ZippyImages/2.jpg";
 import home3 from "../assets/ZippyImages/3.jpg";
 import home4 from "../assets/ZippyImages/4.jpg";
@@ -13,11 +12,13 @@ import home8 from "../assets/ZippyImages/8.jpg";
 import home9 from "../assets/ZippyImages/9.jpg";
 
 import axios from "axios";
+import { about } from "../Data";
+import { style } from "../Config/Design";
 let pros = [];
 const baseUrl =
   process.env.SERVER_URL || "https://zippylink-server.herokuapp.com";
 function Home() {
-  const { Title } = Typography;
+  const { Title, Text } = Typography;
 
   const [projects, setProjects] = useState();
   const [totalBudget, setTotalBudget] = useState(0);
@@ -33,7 +34,7 @@ function Home() {
 
   const getData = async () => {
     await axios
-      .get(`${baseUrl}/all-projects`)
+      .get(`/all-projects`)
       .then((response) => {
         setProjects(response.data.Projects);
         pros = response.data.Projects;
@@ -139,16 +140,17 @@ function Home() {
   return (
     <>
       <div className="layout-content">
-        {/* <Card className="rowgap-vbox"> */}
+        <marquee scrollamount={3.5} style={{ alignItems: "center" }}>
+          <h1 style={{ color: style.btnColor, textDecoration: "bold" }}>
+            Welcome to ZippyLink Office Management System
+          </h1>
+        </marquee>
         <Carousel
           autoplay
           effect="fade"
           dotPosition="right"
           style={{ width: "100%", height: "1005" }}
         >
-          <div>
-            <img src={home1} style={{ width: "100%", height: 400 }} />
-          </div>
           <div>
             <img src={home2} style={{ width: "100%", height: 400 }} />
           </div>
@@ -174,7 +176,6 @@ function Home() {
             <img src={home9} style={{ width: "100%", height: 400 }} />
           </div>
         </Carousel>
-        {/* </Card> */}
 
         <Row className="rowgap-vbox" gutter={[24, 0]}>
           {count.map((c, index) => (
@@ -192,8 +193,8 @@ function Home() {
                   <Row align="middle" gutter={[24, 0]}>
                     <Col xs={20}>
                       <span>{c.today}</span>
-                      <Title level={3}>
-                        {c.title.toFixed(2)}
+                      <Title level={5} style={{ fontFamily: "monospace" }}>
+                        {c.title.toLocaleString("en-US")}
                         <small className={c.bnb}>{c.persent}</small>
                       </Title>
                     </Col>
@@ -206,7 +207,49 @@ function Home() {
             </Col>
           ))}
         </Row>
+        <div>
+          <h1>About Zippylink Inc</h1>
+          <Text type="secondary">{about.what_we_do}</Text>
+          <br /> <br />
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div>
+              <h1>Who We Are?</h1>
+              <Text type="secondary">{about.who_we_are}</Text>
+            </div>
+            <div>
+              <h1>What We Do?</h1>
+              <Text type="secondary">{about.what_we_do}</Text>
+            </div>
+          </div>
+        </div>
       </div>
+      <br />
+      <marquee
+        scrollamount={2}
+        style={{
+          color: style.labelColor,
+          backgroundColor: style.bgColor,
+        }}
+      >
+        <a
+          style={{
+            color: style.labelColor,
+          }}
+          href="mailto:info@zippylink.net"
+        >
+          info@zippylink.net
+        </a>
+
+        <a
+          style={{
+            marginLeft: 30,
+            color: style.labelColor,
+          }}
+          href="callto:i+93766414198"
+        >
+          +93 766 414 198
+        </a>
+      </marquee>
     </>
   );
 }

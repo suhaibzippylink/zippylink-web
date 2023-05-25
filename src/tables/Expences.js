@@ -19,6 +19,7 @@ import { ToTopOutlined } from "@ant-design/icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import AuthContext from "../auth/Context";
+import { style } from "../Config/Design";
 const { TextArea } = Input;
 const { Option } = Select;
 let exps = [];
@@ -29,12 +30,14 @@ function Expences() {
   const [expences, setExpences] = useState();
   const [loader, setLoader] = useState(true);
   const [totalCost, setTotalCost] = useState(0);
+  const [totalUSDCost, setTotalUSDCost] = useState(0);
   const [stringMonth, setStringMonth] = useState("August-2022");
   const [selectedDate, setSelectedDate] = useState(null);
   const [fetchMonth, setFetchMonth] = useState(new Date());
   const [newControler, setNewControler] = useState(true);
   const [visible, setVisible] = useState(false);
   const [since, setSince] = useState(0);
+  const [rate, setRate] = useState(80.2);
   const authContext = useContext(AuthContext);
   console.log("First Line in Expence Table: ", expences);
 
@@ -49,26 +52,24 @@ function Expences() {
   const onFormLayoutChange = ({ disabled }) => {
     setComponentDisabled(disabled);
   };
-  const getAllExpCode = async () => {
-    await axios
-      .get(`${baseUrl}/allExpences`)
-      .then((response) => {
-        let temp = 0;
-        for (let i = 0; i < response.data.allExps.length; i++) {
-          temp = temp + expences[i].Cost;
-        }
-        setTotalCost(temp);
-      })
-      .then((res) => {
-        setLoader(false);
-      });
-  };
+
   const calculateCost = () => {
     let sum = 0;
     for (var i = 0; i < exps.length; i++) {
-      sum += exps[i].Cost;
+      if (exps[i].Currency == "AFN") {
+        sum += exps[i].Cost;
+      } else sum += exps[i].Cost * exps[i].Exchange_Rate;
     }
     setTotalCost(sum);
+  };
+  const calculateUSDCost = () => {
+    let sum = 0;
+    for (var i = 0; i < exps.length; i++) {
+      if (exps[i].Currency == "USD") {
+        sum += exps[i].Cost;
+      } else sum += exps[i].Cost / exps[i].Exchange_Rate;
+    }
+    setTotalUSDCost(sum);
   };
   function toMonthName(monthNumber) {
     const date = new Date();
@@ -88,7 +89,7 @@ function Expences() {
     const date = `${toMonthName(m + 1)}-${year}`;
     alert(date);
     await axios
-      .post(`${baseUrl}/add-newExpenceRecord`, {
+      .post(`/add-newExpenceRecord`, {
         Month: date,
       })
       .then((response) => {
@@ -103,7 +104,7 @@ function Expences() {
     setStringMonth(date);
     // alert(date);
     axios
-      .post(`${baseUrl}/selected-month-expences`, {
+      .post(`/selected-month-expences`, {
         month: date,
       })
       .then((response) => {
@@ -119,7 +120,7 @@ function Expences() {
   const addExpence = async (formData) => {
     console.log("Add Expence:  Form Data: ", formData);
     await axios
-      .post(`${baseUrl}/add-expence`, {
+      .post(`/add-expence`, {
         Month: stringMonth,
         Exp_Code: formData.Exp_Code,
         Exp_Title: formData.Exp_Title,
@@ -130,7 +131,9 @@ function Expences() {
         Name: authContext.user.Name,
         Email: authContext.user.Email,
         Voucher_Number: formData.voucher,
-        Currency: formData.currency,
+        Currency: formData.currency ? formData.currency : "AFN",
+        Exchange_Rate: rate ? rate : 80.2,
+        Cost_Currency: formData.currency ? formData.currency : "AFN",
       })
       .then((response) => {
         if (response.data.message) {
@@ -141,7 +144,7 @@ function Expences() {
   };
   const deleteExpence = (id) => {
     axios
-      .post(`${baseUrl}/delete-expence`, {
+      .post(`/delete-expence`, {
         id,
         month: stringMonth,
       })
@@ -262,9 +265,22 @@ function Expences() {
               <p>{item.Item}</p>
             </>
           ),
-          Cost: (
+          USD_Cost: (
             <>
-              <p>{item.Cost}</p>
+              <p>
+                {item.Currency == "USD"
+                  ? item.Cost.toLocaleString("en-US")
+                  : (item.Cost / item.Exchange_Rate).toLocaleString("en-US")}
+              </p>
+            </>
+          ),
+          AFN_Cost: (
+            <>
+              <p>
+                {item.Currency == "AFN"
+                  ? item.Cost.toLocaleString("en-US")
+                  : (item.Cost * item.Exchange_Rate).toLocaleString("en-US")}
+              </p>
             </>
           ),
           action: (
@@ -293,17 +309,31 @@ function Expences() {
       <h1
         style={{
           position: "relative",
-          left: "75%",
+          left: "60%",
           color: "red",
+          fontFamily: "monospace",
         }}
       >
-        Total Cost: <a onClick={() => calculateCost()}>Calc</a>
+        Total USD Cost: <a onClick={() => calculateUSDCost()}>Calculate</a>
         &nbsp;&nbsp;&nbsp;
-        {totalCost}
+        {totalUSDCost.toLocaleString("en-US")}$
+      </h1>
+      <h1
+        style={{
+          position: "relative",
+          left: "60%",
+          color: "red",
+          fontFamily: "monospace",
+        }}
+      >
+        Total AFN Cost: <a onClick={() => calculateCost()}>Calculate</a>
+        &nbsp;&nbsp;&nbsp;
+        {totalCost.toLocaleString("en-US")}AFN
       </h1>
 
       <>
         <Button
+          style={{ backgroundColor: style.btnColor, color: style.btnTextColor }}
           type="dashed"
           className="ant-full-box"
           icon={<ToTopOutlined />}
@@ -435,7 +465,12 @@ function Expences() {
                     />
                   </div>
                 </Form.Item>
-
+                <Form.Item label="Exchange Rate">
+                  <InputNumber
+                    defaultValue={rate}
+                    onChange={(e) => setRate(e)}
+                  />
+                </Form.Item>
                 <Form.Item label="Description">
                   <TextArea
                     rows={4}
